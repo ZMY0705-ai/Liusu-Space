@@ -1,0 +1,2668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>流俗地 - 校园文学创作平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sky-blue: #CDE2EB;
+            --light-green: #BCDDBE;
+            --light-yellow: #FBFCCD;
+            --green-primary: #64A386;
+            --paper-bg: #FAF9F6;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-light: #999;
+            --border-color: #e8e8e8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .phone-container {
+            width: 390px;
+            height: 100vh;
+            max-height: 844px;
+            background: var(--paper-bg);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border-radius: 40px;
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--paper-bg);
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.02) 2px, rgba(0, 0, 0, 0.02) 4px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            padding-bottom: 80px;
+        }
+
+        .page.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(20px);
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(0);
+        }
+
+        .nav-bar {
+            position: sticky;
+            top: 0;
+            background: rgba(250, 249, 246, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .content {
+            padding: 15px;
+        }
+
+        .work-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .work-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .work-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--sky-blue), var(--light-green));
+        }
+
+        .work-info {
+            padding: 12px;
+        }
+
+        .work-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .work-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .work-author {
+            color: var(--green-primary);
+        }
+
+        .work-stats {
+            display: flex;
+            gap: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-light);
+        }
+
+        .tab-item.active {
+            color: var(--green-primary);
+        }
+
+        .tab-item:hover {
+            color: var(--green-primary);
+        }
+
+        .tab-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .tab-label {
+            font-size: 11px;
+        }
+
+        .fab-button {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--green-primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(100, 163, 134, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            z-index: 99;
+        }
+
+        .fab-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(100, 163, 134, 0.5);
+        }
+
+        .fab-button:active {
+            transform: scale(0.95);
+        }
+
+        .fab-icon {
+            width: 28px;
+            height: 28px;
+            font-size: 28px;
+            line-height: 28px;
+        }
+
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 200;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .bottom-sheet.show {
+            transform: translateY(0);
+        }
+
+        .sheet-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 199;
+        }
+
+        .sheet-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            margin: 0 auto 20px;
+        }
+
+        .sheet-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            margin-bottom: 8px;
+        }
+
+        .sheet-option:hover {
+            background: var(--light-yellow);
+        }
+
+        .sheet-option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .sheet-option-text {
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .profile-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--sky-blue), var(--light-green));
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .profile-tabs {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+        }
+
+        .profile-tab.active {
+            color: var(--green-primary);
+            border-bottom-color: var(--green-primary);
+        }
+
+        .profile-tab:hover {
+            color: var(--green-primary);
+        }
+
+        .message-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: background 0.2s ease;
+        }
+
+        .message-item:hover {
+            background: var(--light-yellow);
+        }
+
+        .message-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--sky-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-text {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .create-form {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--green-primary);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--green-primary);
+        }
+
+        .image-upload {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-upload:hover {
+            border-color: var(--green-primary);
+            background: var(--light-yellow);
+        }
+
+        .image-upload.has-image {
+            border-style: solid;
+            border-color: var(--green-primary);
+        }
+
+        .upload-placeholder {
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+        }
+
+        .upload-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--green-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a9478;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 163, 134, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--light-green);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: #a8d4aa;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .detail-cover {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--sky-blue), var(--light-green));
+        }
+
+        .detail-content {
+            padding: 20px;
+        }
+
+        .detail-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .detail-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-body {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+        }
+
+        .detail-actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            position: sticky;
+            bottom: 60px;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            color: var(--text-secondary);
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+            color: var(--green-primary);
+        }
+
+        .action-icon {
+            font-size: 24px;
+        }
+
+        .action-label {
+            font-size: 12px;
+        }
+
+        .comments-section {
+            padding: 20px;
+            background: white;
+            margin-top: 15px;
+        }
+
+        .comments-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--light-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .comment-input-area {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            position: sticky;
+            bottom: 0;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--green-primary);
+        }
+
+        .comment-send {
+            padding: 10px 20px;
+            background: var(--green-primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .comment-send:hover {
+            background: #5a9478;
+        }
+
+        .topic-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .topic-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .topic-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .topic-author {
+            color: var(--green-primary);
+        }
+
+        .work-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .work-action-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: white;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+        }
+
+        .work-action-btn:hover {
+            background: var(--light-yellow);
+            border-color: var(--green-primary);
+            color: var(--green-primary);
+        }
+
+        .work-action-btn.delete:hover {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #f44336;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 300;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            width: 80%;
+            max-width: 300px;
+            transform: scale(0.9);
+            transition: transform 0.2s ease;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .modal-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn-cancel {
+            background: var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .modal-btn-cancel:hover {
+            background: #ddd;
+        }
+
+        .modal-btn-confirm {
+            background: #f44336;
+            color: white;
+        }
+
+        .modal-btn-confirm:hover {
+            background: #d32f2f;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 14px;
+        }
+
+        .page::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .page::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .page::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .page::-webkit-scrollbar-thumb:hover {
+            background: #ccc;
+        }
+
+        .back-btn {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-3px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @media (max-height: 700px) {
+            .phone-container {
+                max-height: 100vh;
+                border-radius: 0;
+            }
+        }
+
+        /* 登录注册弹窗样式 */
+        .auth-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 400;
+        }
+
+        .auth-modal.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 340px;
+            padding: 30px;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-modal.show .auth-container {
+            transform: scale(1) translateY(0);
+        }
+
+        .auth-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .auth-close:hover {
+            background: #ddd;
+            transform: rotate(90deg);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .auth-tab.active {
+            color: var(--green-primary);
+        }
+
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--green-primary);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .auth-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .auth-subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .auth-input-group {
+            margin-bottom: 18px;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: var(--paper-bg);
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--green-primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(100, 163, 134, 0.1);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--green-primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            background: #5a9478;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 163, 134, 0.3);
+        }
+
+        .auth-btn:active {
+            transform: translateY(0);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .auth-switch-link {
+            color: var(--green-primary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .auth-switch-link:hover {
+            color: #5a9478;
+            text-decoration: underline;
+        }
+
+        /* 完善资料页面 */
+        .complete-profile-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--sky-blue), var(--light-green));
+        }
+
+        .complete-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .complete-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .complete-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-upload-hint {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 11px;
+            padding: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .complete-avatar:hover .avatar-upload-hint {
+            opacity: 1;
+        }
+
+        .complete-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .complete-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .profile-form {
+            padding: 20px;
+        }
+
+        .profile-form-group {
+            margin-bottom: 20px;
+        }
+
+        .profile-form-label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .profile-form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .profile-form-input:focus {
+            outline: none;
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 3px rgba(100, 163, 134, 0.1);
+        }
+
+        .profile-form-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            transition: all 0.2s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        .profile-form-textarea:focus {
+            outline: none;
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 3px rgba(100, 163, 134, 0.1);
+        }
+
+        /* 设置按钮 */
+        .settings-btn {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            font-size: 20px;
+        }
+
+        .settings-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        /* 未登录提示 */
+        .login-prompt {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .login-prompt-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .login-prompt-text {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .login-prompt-btn {
+            padding: 12px 30px;
+            background: var(--green-primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .login-prompt-btn:hover {
+            background: #5a9478;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 163, 134, 0.3);
+        }
+
+        /* 提示信息 */
+        .toast {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 500;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- 首页 -->
+        <div id="home-page" class="page active">
+            <div class="nav-bar">
+                <div class="nav-title">📖 流俗地</div>
+                <div style="width: 24px;"></div>
+            </div>
+            <div class="content" id="home-content"></div>
+        </div>
+
+        <!-- 论坛页 -->
+        <div id="forum-page" class="page hidden">
+            <div class="nav-bar">
+                <div class="nav-title">💬 论坛</div>
+                <div style="width: 24px;"></div>
+            </div>
+            <div class="content" id="forum-content"></div>
+        </div>
+
+        <!-- 个人主页 -->
+        <div id="profile-page" class="page hidden">
+            <div class="nav-bar">
+                <div class="nav-title">👤 我的</div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div class="settings-btn" onclick="showSettings()">⚙️</div>
+                    <div class="nav-icon back-btn" onclick="showMessages()">✉️</div>
+                </div>
+            </div>
+            <div id="profile-header-container">
+                <!-- 动态内容：已登录显示用户信息，未登录显示登录提示 -->
+            </div>
+            <div class="profile-tabs" id="profile-tabs-container" style="display: none;">
+                <div class="profile-tab active" data-tab="drafts">储存作品</div>
+                <div class="profile-tab" data-tab="published">已发表</div>
+                <div class="profile-tab" data-tab="favorites">收藏</div>
+            </div>
+            <div class="content" id="profile-content"></div>
+        </div>
+
+        <!-- 消息页 -->
+        <div id="message-page" class="page hidden">
+            <div class="nav-bar">
+                <div class="back-btn" onclick="navigateTo('profile')">←</div>
+                <div class="nav-title">消息</div>
+                <div style="width: 24px;"></div>
+            </div>
+            <div class="content" id="message-content"></div>
+        </div>
+
+        <!-- 作品详情页 -->
+        <div id="detail-page" class="page hidden">
+            <div class="nav-bar">
+                <div class="back-btn" onclick="goBack()">←</div>
+                <div class="nav-title">作品详情</div>
+                <div style="width: 24px;"></div>
+            </div>
+            <div id="detail-content"></div>
+        </div>
+
+        <!-- 话题详情页 -->
+        <div id="topic-detail-page" class="page hidden">
+            <div class="nav-bar">
+                <div class="back-btn" onclick="goBack()">←</div>
+                <div class="nav-title">话题详情</div>
+                <div style="width: 24px;"></div>
+            </div>
+            <div id="topic-detail-content"></div>
+        </div>
+
+        <!-- 创作页面 -->
+        <div id="create-page" class="page hidden">
+            <div class="nav-bar">
+                <div class="back-btn" onclick="goBack()">←</div>
+                <div class="nav-title">创作作品</div>
+                <div style="width: 24px;"></div>
+            </div>
+            <div class="create-form">
+                <div class="form-group">
+                    <label class="form-label">封面图片 *</label>
+                    <div class="image-upload" id="cover-upload" onclick="document.getElementById('cover-input').click()">
+                        <div class="upload-placeholder" id="upload-placeholder">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">点击上传封面</div>
+                        </div>
+                        <img id="cover-preview" class="upload-preview" style="display: none;">
+                    </div>
+                    <input type="file" id="cover-input" accept="image/*" style="display: none;" onchange="handleCoverUpload(event)">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">作品标题</label>
+                    <input type="text" class="form-input" id="work-title" placeholder="请输入作品标题">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">正文内容</label>
+                    <textarea class="form-textarea" id="work-content" placeholder="开始你的创作..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="saveDraft()">保存草稿</button>
+                    <button class="btn btn-primary" onclick="publishWork()">发布作品</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 编辑页面 -->
+        <div id="edit-page" class="page hidden">
+            <div class="nav-bar">
+                <div class="back-btn" onclick="goBack()">←</div>
+                <div class="nav-title">编辑作品</div>
+                <div style="width: 24px;"></div>
+            </div>
+            <div class="create-form">
+                <div class="form-group">
+                    <label class="form-label">封面图片 *</label>
+                    <div class="image-upload" id="edit-cover-upload" onclick="document.getElementById('edit-cover-input').click()">
+                        <div class="upload-placeholder" id="edit-upload-placeholder">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">点击上传封面</div>
+                        </div>
+                        <img id="edit-cover-preview" class="upload-preview" style="display: none;">
+                    </div>
+                    <input type="file" id="edit-cover-input" accept="image/*" style="display: none;" onchange="handleEditCoverUpload(event)">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">作品标题</label>
+                    <input type="text" class="form-input" id="edit-work-title" placeholder="请输入作品标题">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">正文内容</label>
+                    <textarea class="form-textarea" id="edit-work-content" placeholder="开始你的创作..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="cancelEdit()">取消</button>
+                    <button class="btn btn-primary" onclick="saveEdit()">保存修改</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部TabBar -->
+        <div class="tab-bar">
+            <div class="tab-item active" data-page="home" onclick="switchTab('home')">
+                <div class="tab-icon">🏠</div>
+                <div class="tab-label">首页</div>
+            </div>
+            <div class="tab-item" data-page="forum" onclick="switchTab('forum')">
+                <div class="tab-icon">💬</div>
+                <div class="tab-label">论坛</div>
+            </div>
+            <div class="tab-item" data-page="profile" onclick="switchTab('profile')">
+                <div class="tab-icon">👤</div>
+                <div class="tab-label">我的</div>
+            </div>
+        </div>
+
+        <!-- 悬浮按钮 -->
+        <button class="fab-button" onclick="showBottomSheet()">
+            <div class="fab-icon">+</div>
+        </button>
+
+        <!-- 底部弹出菜单遮罩 -->
+        <div class="sheet-overlay" id="sheet-overlay" onclick="hideBottomSheet()"></div>
+
+        <!-- 底部弹出菜单 -->
+        <div class="bottom-sheet" id="bottom-sheet">
+            <div class="sheet-handle"></div>
+            <div class="sheet-option" onclick="createWork('draft')">
+                <div class="sheet-option-icon" style="background: var(--light-yellow);">📝</div>
+                <div class="sheet-option-text">储存作品</div>
+            </div>
+            <div class="sheet-option" onclick="createWork('publish')">
+                <div class="sheet-option-icon" style="background: var(--sky-blue);">📖</div>
+                <div class="sheet-option-text">发表作品</div>
+            </div>
+            <div class="sheet-option" onclick="createTopic()">
+                <div class="sheet-option-icon" style="background: var(--light-green);">💭</div>
+                <div class="sheet-option-text">发表讨论</div>
+            </div>
+        </div>
+
+        <!-- 确认删除弹窗 -->
+        <div class="modal-overlay" id="delete-modal">
+            <div class="modal">
+                <div class="modal-title">确认删除</div>
+                <div class="modal-text">确定要删除这个作品吗？此操作不可恢复。</div>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">取消</button>
+                    <button class="modal-btn modal-btn-confirm" onclick="confirmDelete()">删除</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 登录注册弹窗 -->
+        <div class="auth-modal" id="auth-modal">
+            <div class="auth-container">
+                <div class="auth-close" onclick="closeAuthModal()">×</div>
+                
+                <div class="auth-tabs">
+                    <div class="auth-tab active" data-auth-tab="login" onclick="switchAuthTab('login')">登录</div>
+                    <div class="auth-tab" data-auth-tab="register" onclick="switchAuthTab('register')">注册</div>
+                </div>
+
+                <!-- 登录表单 -->
+                <div class="auth-form active" id="login-form">
+                    <div class="auth-title">欢迎回来</div>
+                    <div class="auth-subtitle">登录后即可互动与创作</div>
+                    
+                    <div class="auth-input-group">
+                        <input type="text" class="auth-input" id="login-account" placeholder="手机号或邮箱">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" class="auth-input" id="login-password" placeholder="密码">
+                    </div>
+                    
+                    <button class="auth-btn" onclick="handleLogin()">登录</button>
+                    
+                    <div class="auth-switch">
+                        没有账号？<span class="auth-switch-link" onclick="switchAuthTab('register')">去注册</span>
+                    </div>
+                </div>
+
+                <!-- 注册表单 -->
+                <div class="auth-form" id="register-form">
+                    <div class="auth-title">加入我们</div>
+                    <div class="auth-subtitle">开启你的文学创作之旅</div>
+                    
+                    <div class="auth-input-group">
+                        <input type="text" class="auth-input" id="register-account" placeholder="手机号或邮箱">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" class="auth-input" id="register-password" placeholder="密码">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" class="auth-input" id="register-confirm-password" placeholder="确认密码">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="text" class="auth-input" id="register-name" placeholder="姓名">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="text" class="auth-input" id="register-student-id" placeholder="学号">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="text" class="auth-input" id="register-major" placeholder="专业">
+                    </div>
+                    
+                    <button class="auth-btn" onclick="handleRegister()">注册</button>
+                    
+                    <div class="auth-switch">
+                        已有账号？<span class="auth-switch-link" onclick="switchAuthTab('login')">去登录</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 完善个人资料页面 -->
+        <div id="complete-profile-page" class="page hidden">
+            <div class="complete-profile-header">
+                <div class="complete-avatar" id="complete-avatar" onclick="document.getElementById('complete-avatar-input').click()">
+                    <span id="complete-avatar-placeholder">👤</span>
+                    <img id="complete-avatar-preview" style="display: none;">
+                    <div class="avatar-upload-hint">点击更换</div>
+                </div>
+                <input type="file" id="complete-avatar-input" accept="image/*" style="display: none;" onchange="handleCompleteAvatarUpload(event)">
+                <div class="complete-title">完善个人资料</div>
+                <div class="complete-subtitle">让大家更好地认识你</div>
+            </div>
+            <div class="profile-form">
+                <div class="profile-form-group">
+                    <label class="profile-form-label">昵称</label>
+                    <input type="text" class="profile-form-input" id="complete-nickname" placeholder="请输入昵称">
+                </div>
+                <div class="profile-form-group">
+                    <label class="profile-form-label">个性签名</label>
+                    <textarea class="profile-form-textarea" id="complete-signature" placeholder="写一句话介绍自己..."></textarea>
+                </div>
+                <div class="profile-form-group">
+                    <label class="profile-form-label">姓名</label>
+                    <input type="text" class="profile-form-input" id="complete-name" placeholder="请输入姓名" readonly>
+                </div>
+                <div class="profile-form-group">
+                    <label class="profile-form-label">学号</label>
+                    <input type="text" class="profile-form-input" id="complete-student-id" placeholder="请输入学号" readonly>
+                </div>
+                <div class="profile-form-group">
+                    <label class="profile-form-label">专业</label>
+                    <input type="text" class="profile-form-input" id="complete-major" placeholder="请输入专业" readonly>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="saveCompleteProfile()">保存信息</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 个人信息设置页面 -->
+        <div id="settings-page" class="page hidden">
+            <div class="nav-bar">
+                <div class="back-btn" onclick="goBack()">←</div>
+                <div class="nav-title">个人信息设置</div>
+                <div style="width: 24px;"></div>
+            </div>
+            <div class="profile-form">
+                <div class="profile-form-group">
+                    <label class="profile-form-label">头像</label>
+                    <div class="complete-avatar" id="settings-avatar" onclick="document.getElementById('settings-avatar-input').click()" style="margin: 0 auto;">
+                        <span id="settings-avatar-placeholder">👤</span>
+                        <img id="settings-avatar-preview" style="display: none;">
+                        <div class="avatar-upload-hint">点击更换</div>
+                    </div>
+                    <input type="file" id="settings-avatar-input" accept="image/*" style="display: none;" onchange="handleSettingsAvatarUpload(event)">
+                </div>
+                <div class="profile-form-group">
+                    <label class="profile-form-label">昵称</label>
+                    <input type="text" class="profile-form-input" id="settings-nickname" placeholder="请输入昵称">
+                </div>
+                <div class="profile-form-group">
+                    <label class="profile-form-label">个性签名</label>
+                    <textarea class="profile-form-textarea" id="settings-signature" placeholder="写一句话介绍自己..."></textarea>
+                </div>
+                <div class="profile-form-group">
+                    <label class="profile-form-label">姓名</label>
+                    <input type="text" class="profile-form-input" id="settings-name" placeholder="请输入姓名">
+                </div>
+                <div class="profile-form-group">
+                    <label class="profile-form-label">学号</label>
+                    <input type="text" class="profile-form-input" id="settings-student-id" placeholder="请输入学号">
+                </div>
+                <div class="profile-form-group">
+                    <label class="profile-form-label">专业</label>
+                    <input type="text" class="profile-form-input" id="settings-major" placeholder="请输入专业">
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary" onclick="cancelSettings()">取消</button>
+                    <button class="btn btn-primary" onclick="saveSettings()">保存修改</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast提示 -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+        // 数据存储
+        let works = [
+            {
+                id: 1,
+                title: '春日的诗',
+                author: '林小雅',
+                content: '春风拂过柳梢头，\n细雨滋润花间露。\n青春如梦般短暂，\n唯有文字永流传。\n\n在这美好的校园里，\n我们用笔记录时光，\n用心灵感受世界，\n用文字传递温暖。',
+                cover: '',
+                publishTime: '2小时前',
+                likes: 23,
+                comments: 5,
+                isPublished: true,
+                isDraft: false,
+                commentsList: [
+                    { author: '张同学', text: '写得真好！', avatar: '😊' },
+                    { author: '李同学', text: '很有意境', avatar: '😃' }
+                ]
+            },
+            {
+                id: 2,
+                title: '图书馆的午后',
+                author: '王书虫',
+                content: '阳光透过玻璃窗，\n洒在泛黄的书页上。\n安静的图书馆里，\n只有翻书的声音。\n\n我在这里寻找知识，\n也在这里遇见自己。',
+                cover: '',
+                publishTime: '5小时前',
+                likes: 45,
+                comments: 12,
+                isPublished: true,
+                isDraft: false,
+                commentsList: [
+                    { author: '赵同学', text: '感同身受', avatar: '🙂' }
+                ]
+            },
+            {
+                id: 3,
+                title: '雨夜随笔',
+                author: '陈雨眠',
+                content: '夜深了，雨还在下。\n窗外的雨声，\n像是大自然的交响乐。\n\n我坐在窗前，\n听着雨声，\n想着心事。',
+                cover: '',
+                publishTime: '昨天',
+                likes: 67,
+                comments: 8,
+                isPublished: true,
+                isDraft: false,
+                commentsList: []
+            }
+        ];
+
+        let topics = [
+            {
+                id: 1,
+                title: '大家觉得古代文学课怎么样？',
+                author: '小明同学',
+                content: '最近在上古代文学课，老师讲得很有趣，但是作业有点多。大家有什么学习心得可以分享吗？',
+                publishTime: '1小时前',
+                comments: 15,
+                commentsList: [
+                    { author: '小红', text: '我觉得要多读原著', avatar: '😊' },
+                    { author: '小刚', text: '笔记很重要', avatar: '😃' }
+                ]
+            },
+            {
+                id: 2,
+                title: '推荐几本好书',
+                author: '读书达人',
+                content: '最近读了《百年孤独》和《活着》，真的很震撼。大家有什么好书推荐吗？',
+                publishTime: '3小时前',
+                comments: 23,
+                commentsList: []
+            },
+            {
+                id: 3,
+                title: '校园里的春天',
+                author: '摄影爱好者',
+                content: '春天的校园真美，樱花开了，桃花也开了。大家有没有去拍照？',
+                publishTime: '昨天',
+                comments: 8,
+                commentsList: []
+            }
+        ];
+
+        let messages = [
+            { id: 1, user: '小李', action: '评论了你的作品', time: '5分钟前', avatar: '😊' },
+            { id: 2, user: '小王', action: '点赞了你的作品', time: '1小时前', avatar: '😃' },
+            { id: 3, user: '小张', action: '收藏了你的作品', time: '2小时前', avatar: '🙂' },
+            { id: 4, user: '小赵', action: '评论了你的作品', time: '昨天', avatar: '😄' }
+        ];
+
+        let currentPage = 'home';
+        let previousPage = 'home';
+        let currentProfileTab = 'drafts';
+        let editingWorkId = null;
+        let deletingWorkId = null;
+        let currentCoverImage = '';
+        let editCoverImage = '';
+        let createMode = 'publish';
+
+        // 用户认证相关
+        let isLoggedIn = false;
+        let userInfo = null;
+        let tempAvatarImage = '';
+        let settingsAvatarImage = '';
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查是否已登录
+            checkLoginStatus();
+            
+            renderHomeWorks();
+            renderForumTopics();
+            renderProfileWorks();
+            renderMessages();
+            setupProfileTabs();
+            
+            // 首次访问显示登录弹窗
+            if (!isLoggedIn) {
+                setTimeout(() => {
+                    showAuthModal();
+                }, 500);
+            }
+        });
+
+        // 检查登录状态
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('userInfo');
+            const savedLoginStatus = localStorage.getItem('isLoggedIn');
+            
+            if (savedLoginStatus === 'true' && savedUser) {
+                userInfo = JSON.parse(savedUser);
+                isLoggedIn = true;
+                updateUIForLoggedInUser();
+            }
+        }
+
+        // 更新UI为已登录状态
+        function updateUIForLoggedInUser() {
+            if (userInfo) {
+                // 更新个人主页
+                const profileName = document.querySelector('.profile-name');
+                if (profileName) {
+                    profileName.textContent = userInfo.nickname || userInfo.name || '文艺青年';
+                }
+                
+                const profileAvatar = document.querySelector('.profile-avatar');
+                if (profileAvatar && userInfo.avatar) {
+                    profileAvatar.innerHTML = `<img src="${userInfo.avatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                }
+            }
+        }
+
+        // Tab切换
+        function switchTab(page) {
+            previousPage = currentPage;
+            currentPage = page;
+
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-page="${page}"]`).classList.add('active');
+
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+                p.classList.add('hidden');
+            });
+            document.getElementById(`${page}-page`).classList.remove('hidden');
+            document.getElementById(`${page}-page`).classList.add('active');
+
+            if (page === 'home') {
+                renderHomeWorks();
+            } else if (page === 'forum') {
+                renderForumTopics();
+            } else if (page === 'profile') {
+                renderProfileWorks();
+            }
+        }
+
+        // 导航到指定页面
+        function navigateTo(page) {
+            previousPage = currentPage;
+            currentPage = page;
+
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+                p.classList.add('hidden');
+            });
+            document.getElementById(`${page}-page`).classList.remove('hidden');
+            document.getElementById(`${page}-page`).classList.add('active');
+        }
+
+        // 返回上一页
+        function goBack() {
+            navigateTo(previousPage);
+        }
+
+        // 渲染首页作品
+        function renderHomeWorks() {
+            const container = document.getElementById('home-content');
+            const publishedWorks = works.filter(w => w.isPublished && !w.isDraft);
+            
+            if (publishedWorks.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📚</div><div class="empty-text">暂无作品</div></div>';
+                return;
+            }
+
+            container.innerHTML = publishedWorks.map(work => `
+                <div class="work-card fade-in" onclick="showWorkDetail(${work.id})">
+                    <div class="work-cover" style="${work.cover ? 'background-image: url(' + work.cover + '); background-size: cover;' : ''}"></div>
+                    <div class="work-info">
+                        <div class="work-title">${work.title}</div>
+                        <div class="work-meta">
+                            <span class="work-author">${work.author}</span>
+                            <span>${work.publishTime}</span>
+                        </div>
+                        <div class="work-meta" style="margin-top: 8px;">
+                            <div class="work-stats">
+                                <span class="stat-item">❤️ ${work.likes}</span>
+                                <span class="stat-item">💬 ${work.comments}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染论坛话题
+        function renderForumTopics() {
+            const container = document.getElementById('forum-content');
+            
+            if (topics.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">💭</div><div class="empty-text">暂无话题</div></div>';
+                return;
+            }
+
+            container.innerHTML = topics.map(topic => `
+                <div class="topic-card fade-in" onclick="showTopicDetail(${topic.id})">
+                    <div class="topic-title">${topic.title}</div>
+                    <div class="topic-meta">
+                        <span class="topic-author">${topic.author}</span>
+                        <span>${topic.publishTime} · 💬 ${topic.comments}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染个人作品
+        function renderProfileWorks() {
+            const headerContainer = document.getElementById('profile-header-container');
+            const tabsContainer = document.getElementById('profile-tabs-container');
+            const container = document.getElementById('profile-content');
+            
+            // 根据登录状态显示不同内容
+            if (!isLoggedIn) {
+                // 未登录状态
+                headerContainer.innerHTML = `
+                    <div class="login-prompt">
+                        <div class="login-prompt-icon">🔐</div>
+                        <div class="login-prompt-text">登录后即可管理作品、互动评论</div>
+                        <button class="login-prompt-btn" onclick="showAuthModal()">登录 / 注册</button>
+                    </div>
+                `;
+                tabsContainer.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+            
+            // 已登录状态 - 显示用户信息
+            headerContainer.innerHTML = `
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        ${userInfo.avatar ? `<img src="${userInfo.avatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">` : '👤'}
+                    </div>
+                    <div class="profile-name">${userInfo.nickname || userInfo.name || '文艺青年'}</div>
+                    ${userInfo.signature ? `<div style="font-size: 13px; color: #666; margin-top: 8px;">${userInfo.signature}</div>` : ''}
+                    ${userInfo.major ? `<div style="font-size: 12px; color: #999; margin-top: 4px;">${userInfo.major} | ${userInfo.studentId}</div>` : ''}
+                </div>
+            `;
+            tabsContainer.style.display = 'flex';
+            
+            let filteredWorks = [];
+
+            if (currentProfileTab === 'drafts') {
+                filteredWorks = works.filter(w => w.isDraft);
+            } else if (currentProfileTab === 'published') {
+                filteredWorks = works.filter(w => w.isPublished && !w.isDraft);
+            } else if (currentProfileTab === 'favorites') {
+                filteredWorks = works.filter(w => w.isPublished).slice(0, 2);
+            }
+
+            if (filteredWorks.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">暂无作品</div></div>';
+                return;
+            }
+
+            container.innerHTML = filteredWorks.map(work => `
+                <div class="work-card fade-in">
+                    <div class="work-cover" style="${work.cover ? 'background-image: url(' + work.cover + '); background-size: cover;' : ''}" onclick="showWorkDetail(${work.id})"></div>
+                    <div class="work-info">
+                        <div class="work-title">${work.title}</div>
+                        <div class="work-meta">
+                            <span>${work.publishTime}</span>
+                        </div>
+                        ${currentProfileTab === 'published' ? `
+                        <div class="work-actions">
+                            <button class="work-action-btn" onclick="editWork(${work.id}, event)">编辑</button>
+                            <button class="work-action-btn delete" onclick="deleteWork(${work.id}, event)">删除</button>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染消息
+        function renderMessages() {
+            const container = document.getElementById('message-content');
+            
+            if (messages.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">✉️</div><div class="empty-text">暂无消息</div></div>';
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => `
+                <div class="message-item fade-in">
+                    <div class="message-avatar">${msg.avatar}</div>
+                    <div class="message-content">
+                        <div class="message-text"><strong>${msg.user}</strong> ${msg.action}</div>
+                        <div class="message-time">${msg.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 设置个人主页Tab
+        function setupProfileTabs() {
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentProfileTab = this.dataset.tab;
+                    renderProfileWorks();
+                });
+            });
+        }
+
+        // 显示作品详情
+        function showWorkDetail(workId) {
+            const work = works.find(w => w.id === workId);
+            if (!work) return;
+
+            previousPage = currentPage;
+            const detailContent = document.getElementById('detail-content');
+            detailContent.innerHTML = `
+                <div class="detail-cover" style="${work.cover ? 'background-image: url(' + work.cover + '); background-size: cover;' : ''}"></div>
+                <div class="detail-content">
+                    <div class="detail-title">${work.title}</div>
+                    <div class="detail-meta">
+                        <span>${work.author}</span>
+                        <span>${work.publishTime}</span>
+                    </div>
+                    <div class="detail-body">${work.content.replace(/\n/g, '<br>')}</div>
+                </div>
+                <div class="detail-actions">
+                    <div class="action-btn" onclick="likeWork(${work.id})">
+                        <div class="action-icon">❤️</div>
+                        <div class="action-label">${work.likes}</div>
+                    </div>
+                    <div class="action-btn">
+                        <div class="action-icon">💬</div>
+                        <div class="action-label">${work.comments}</div>
+                    </div>
+                    <div class="action-btn">
+                        <div class="action-icon">⭐</div>
+                        <div class="action-label">收藏</div>
+                    </div>
+                </div>
+                <div class="comments-section">
+                    <div class="comments-title">评论 (${work.commentsList.length})</div>
+                    ${work.commentsList.map(comment => `
+                        <div class="comment-item">
+                            <div class="comment-avatar">${comment.avatar}</div>
+                            <div class="comment-content">
+                                <div class="comment-author">${comment.author}</div>
+                                <div class="comment-text">${comment.text}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="comment-input-area">
+                    <input type="text" class="comment-input" id="comment-input-${work.id}" placeholder="写下你的评论...">
+                    <button class="comment-send" onclick="addComment(${work.id})">发送</button>
+                </div>
+            `;
+
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+                p.classList.add('hidden');
+            });
+            document.getElementById('detail-page').classList.remove('hidden');
+            document.getElementById('detail-page').classList.add('active');
+        }
+
+        // 显示话题详情
+        function showTopicDetail(topicId) {
+            const topic = topics.find(t => t.id === topicId);
+            if (!topic) return;
+
+            previousPage = currentPage;
+            const detailContent = document.getElementById('topic-detail-content');
+            detailContent.innerHTML = `
+                <div class="detail-content">
+                    <div class="detail-title">${topic.title}</div>
+                    <div class="detail-meta">
+                        <span>${topic.author}</span>
+                        <span>${topic.publishTime}</span>
+                    </div>
+                    <div class="detail-body">${topic.content.replace(/\n/g, '<br>')}</div>
+                </div>
+                <div class="comments-section">
+                    <div class="comments-title">评论 (${topic.commentsList.length})</div>
+                    ${topic.commentsList.map(comment => `
+                        <div class="comment-item">
+                            <div class="comment-avatar">${comment.avatar}</div>
+                            <div class="comment-content">
+                                <div class="comment-author">${comment.author}</div>
+                                <div class="comment-text">${comment.text}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="comment-input-area">
+                    <input type="text" class="comment-input" id="topic-comment-input-${topic.id}" placeholder="写下你的评论...">
+                    <button class="comment-send" onclick="addTopicComment(${topic.id})">发送</button>
+                </div>
+            `;
+
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+                p.classList.add('hidden');
+            });
+            document.getElementById('topic-detail-page').classList.remove('hidden');
+            document.getElementById('topic-detail-page').classList.add('active');
+        }
+
+        // 添加评论
+        function addComment(workId) {
+            if (!checkLoginAndPrompt()) return;
+            
+            const input = document.getElementById('comment-input-' + workId);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const work = works.find(w => w.id === workId);
+            work.commentsList.push({
+                author: userInfo.nickname || '我',
+                text: text,
+                avatar: '😊'
+            });
+            work.comments++;
+            input.value = '';
+            showWorkDetail(workId);
+        }
+
+        // 添加话题评论
+        function addTopicComment(topicId) {
+            if (!checkLoginAndPrompt()) return;
+            
+            const input = document.getElementById('topic-comment-input-' + topicId);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const topic = topics.find(t => t.id === topicId);
+            topic.commentsList.push({
+                author: userInfo.nickname || '我',
+                text: text,
+                avatar: '😊'
+            });
+            topic.comments++;
+            input.value = '';
+            showTopicDetail(topicId);
+        }
+
+        // 点赞作品
+        function likeWork(workId) {
+            if (!checkLoginAndPrompt()) return;
+            
+            const work = works.find(w => w.id === workId);
+            work.likes++;
+            showWorkDetail(workId);
+        }
+
+        // 显示底部菜单
+        function showBottomSheet() {
+            document.getElementById('bottom-sheet').classList.add('show');
+            document.getElementById('sheet-overlay').classList.add('show');
+        }
+
+        // 隐藏底部菜单
+        function hideBottomSheet() {
+            document.getElementById('bottom-sheet').classList.remove('show');
+            document.getElementById('sheet-overlay').classList.remove('show');
+        }
+
+        // 创建作品
+        function createWork(mode) {
+            if (!checkLoginAndPrompt()) return;
+            
+            createMode = mode;
+            hideBottomSheet();
+            
+            // 清空表单
+            document.getElementById('work-title').value = '';
+            document.getElementById('work-content').value = '';
+            document.getElementById('cover-preview').style.display = 'none';
+            document.getElementById('upload-placeholder').style.display = 'block';
+            document.getElementById('cover-upload').classList.remove('has-image');
+            currentCoverImage = '';
+            
+            navigateTo('create');
+        }
+
+        // 处理封面上传
+        function handleCoverUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentCoverImage = e.target.result;
+                document.getElementById('cover-preview').src = currentCoverImage;
+                document.getElementById('cover-preview').style.display = 'block';
+                document.getElementById('upload-placeholder').style.display = 'none';
+                document.getElementById('cover-upload').classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 保存草稿
+        function saveDraft() {
+            const title = document.getElementById('work-title').value.trim();
+            const content = document.getElementById('work-content').value.trim();
+
+            if (!title) {
+                showToast('请输入作品标题');
+                return;
+            }
+
+            const newWork = {
+                id: Date.now(),
+                title: title,
+                author: userInfo.nickname || userInfo.name || '文艺青年',
+                content: content,
+                cover: currentCoverImage,
+                publishTime: '刚刚',
+                likes: 0,
+                comments: 0,
+                isPublished: false,
+                isDraft: true,
+                commentsList: []
+            };
+
+            works.unshift(newWork);
+            showToast('草稿已保存');
+            navigateTo('profile');
+            currentProfileTab = 'drafts';
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-tab="drafts"]').classList.add('active');
+            renderProfileWorks();
+        }
+
+        // 发布作品
+        function publishWork() {
+            const title = document.getElementById('work-title').value.trim();
+            const content = document.getElementById('work-content').value.trim();
+
+            if (!title) {
+                showToast('请输入作品标题');
+                return;
+            }
+
+            if (!content) {
+                showToast('请输入作品内容');
+                return;
+            }
+
+            const newWork = {
+                id: Date.now(),
+                title: title,
+                author: userInfo.nickname || userInfo.name || '文艺青年',
+                content: content,
+                cover: currentCoverImage,
+                publishTime: '刚刚',
+                likes: 0,
+                comments: 0,
+                isPublished: true,
+                isDraft: false,
+                commentsList: []
+            };
+
+            works.unshift(newWork);
+            showToast('作品发布成功');
+            navigateTo('home');
+            renderHomeWorks();
+        }
+
+        // 编辑作品
+        function editWork(workId, event) {
+            if (!checkLoginAndPrompt()) return;
+            
+            event.stopPropagation();
+            const work = works.find(w => w.id === workId);
+            if (!work) return;
+
+            editingWorkId = workId;
+            editCoverImage = work.cover || '';
+
+            document.getElementById('edit-work-title').value = work.title;
+            document.getElementById('edit-work-content').value = work.content;
+
+            if (work.cover) {
+                document.getElementById('edit-cover-preview').src = work.cover;
+                document.getElementById('edit-cover-preview').style.display = 'block';
+                document.getElementById('edit-upload-placeholder').style.display = 'none';
+                document.getElementById('edit-cover-upload').classList.add('has-image');
+            } else {
+                document.getElementById('edit-cover-preview').style.display = 'none';
+                document.getElementById('edit-upload-placeholder').style.display = 'block';
+                document.getElementById('edit-cover-upload').classList.remove('has-image');
+            }
+
+            navigateTo('edit');
+        }
+
+        // 处理编辑封面上传
+        function handleEditCoverUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                editCoverImage = e.target.result;
+                document.getElementById('edit-cover-preview').src = editCoverImage;
+                document.getElementById('edit-cover-preview').style.display = 'block';
+                document.getElementById('edit-upload-placeholder').style.display = 'none';
+                document.getElementById('edit-cover-upload').classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 保存编辑
+        function saveEdit() {
+            const title = document.getElementById('edit-work-title').value.trim();
+            const content = document.getElementById('edit-work-content').value.trim();
+
+            if (!title) {
+                showToast('请输入作品标题');
+                return;
+            }
+
+            const work = works.find(w => w.id === editingWorkId);
+            if (work) {
+                work.title = title;
+                work.content = content;
+                work.cover = editCoverImage;
+            }
+
+            showToast('修改已保存');
+            navigateTo('profile');
+            renderProfileWorks();
+        }
+
+        // 取消编辑
+        function cancelEdit() {
+            navigateTo('profile');
+        }
+
+        // 删除作品
+        function deleteWork(workId, event) {
+            if (!checkLoginAndPrompt()) return;
+            
+            event.stopPropagation();
+            deletingWorkId = workId;
+            document.getElementById('delete-modal').classList.add('show');
+        }
+
+        // 关闭删除弹窗
+        function closeDeleteModal() {
+            document.getElementById('delete-modal').classList.remove('show');
+            deletingWorkId = null;
+        }
+
+        // 确认删除
+        function confirmDelete() {
+            if (deletingWorkId) {
+                works = works.filter(w => w.id !== deletingWorkId);
+                renderProfileWorks();
+                closeDeleteModal();
+                showToast('作品已删除');
+            }
+        }
+
+        // 显示消息页面
+        function showMessages() {
+            navigateTo('message');
+            renderMessages();
+        }
+
+        // 创建话题
+        function createTopic() {
+            if (!checkLoginAndPrompt()) return;
+            
+            hideBottomSheet();
+            const title = prompt('请输入话题标题：');
+            if (!title) return;
+
+            const content = prompt('请输入话题内容：');
+            if (!content) return;
+
+            const newTopic = {
+                id: Date.now(),
+                title: title,
+                author: userInfo.nickname || '文艺青年',
+                content: content,
+                publishTime: '刚刚',
+                comments: 0,
+                commentsList: []
+            };
+
+            topics.unshift(newTopic);
+            alert('话题发布成功');
+            navigateTo('forum');
+            renderForumTopics();
+        }
+
+        // 检查登录并提示
+        function checkLoginAndPrompt() {
+            if (!isLoggedIn) {
+                showToast('请先登录后再操作');
+                setTimeout(() => {
+                    showAuthModal();
+                }, 1000);
+                return false;
+            }
+            return true;
+        }
+
+        // 显示Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // 显示认证弹窗
+        function showAuthModal() {
+            document.getElementById('auth-modal').classList.add('show');
+        }
+
+        // 关闭认证弹窗
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.remove('show');
+        }
+
+        // 切换认证Tab
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-auth-tab="${tab}"]`).classList.add('active');
+            
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.getElementById(`${tab}-form`).classList.add('active');
+        }
+
+        // 处理登录
+        function handleLogin() {
+            const account = document.getElementById('login-account').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            
+            if (!account || !password) {
+                showToast('请填写完整信息');
+                return;
+            }
+            
+            // 模拟登录 - 从localStorage查找用户
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.account === account && u.password === password);
+            
+            if (user) {
+                isLoggedIn = true;
+                userInfo = user;
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userInfo', JSON.stringify(user));
+                
+                updateUIForLoggedInUser();
+                closeAuthModal();
+                showToast('登录成功');
+                
+                // 清空表单
+                document.getElementById('login-account').value = '';
+                document.getElementById('login-password').value = '';
+            } else {
+                showToast('账号或密码错误');
+            }
+        }
+
+        // 处理注册
+        function handleRegister() {
+            const account = document.getElementById('register-account').value.trim();
+            const password = document.getElementById('register-password').value.trim();
+            const confirmPassword = document.getElementById('register-confirm-password').value.trim();
+            const name = document.getElementById('register-name').value.trim();
+            const studentId = document.getElementById('register-student-id').value.trim();
+            const major = document.getElementById('register-major').value.trim();
+            
+            if (!account || !password || !confirmPassword || !name || !studentId || !major) {
+                showToast('请填写完整信息');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showToast('两次密码输入不一致');
+                return;
+            }
+            
+            // 检查账号是否已存在
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(u => u.account === account)) {
+                showToast('该账号已被注册');
+                return;
+            }
+            
+            // 创建新用户
+            const newUser = {
+                account: account,
+                password: password,
+                name: name,
+                studentId: studentId,
+                major: major,
+                nickname: name,
+                signature: '',
+                avatar: ''
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // 自动登录
+            isLoggedIn = true;
+            userInfo = newUser;
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userInfo', JSON.stringify(newUser));
+            
+            closeAuthModal();
+            showToast('注册成功');
+            
+            // 跳转到完善资料页面
+            setTimeout(() => {
+                navigateToCompleteProfile();
+            }, 500);
+            
+            // 清空表单
+            document.getElementById('register-account').value = '';
+            document.getElementById('register-password').value = '';
+            document.getElementById('register-confirm-password').value = '';
+            document.getElementById('register-name').value = '';
+            document.getElementById('register-student-id').value = '';
+            document.getElementById('register-major').value = '';
+        }
+
+        // 导航到完善资料页面
+        function navigateToCompleteProfile() {
+            previousPage = currentPage;
+            
+            // 填充只读字段
+            document.getElementById('complete-name').value = userInfo.name || '';
+            document.getElementById('complete-student-id').value = userInfo.studentId || '';
+            document.getElementById('complete-major').value = userInfo.major || '';
+            document.getElementById('complete-nickname').value = userInfo.nickname || '';
+            document.getElementById('complete-signature').value = userInfo.signature || '';
+            
+            // 显示头像
+            if (userInfo.avatar) {
+                document.getElementById('complete-avatar-preview').src = userInfo.avatar;
+                document.getElementById('complete-avatar-preview').style.display = 'block';
+                document.getElementById('complete-avatar-placeholder').style.display = 'none';
+            }
+            
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+                p.classList.add('hidden');
+            });
+            document.getElementById('complete-profile-page').classList.remove('hidden');
+            document.getElementById('complete-profile-page').classList.add('active');
+        }
+
+        // 处理完善资料头像上传
+        function handleCompleteAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                tempAvatarImage = e.target.result;
+                document.getElementById('complete-avatar-preview').src = tempAvatarImage;
+                document.getElementById('complete-avatar-preview').style.display = 'block';
+                document.getElementById('complete-avatar-placeholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 保存完善资料
+        function saveCompleteProfile() {
+            const nickname = document.getElementById('complete-nickname').value.trim();
+            const signature = document.getElementById('complete-signature').value.trim();
+            
+            if (!nickname) {
+                showToast('请输入昵称');
+                return;
+            }
+            
+            userInfo.nickname = nickname;
+            userInfo.signature = signature;
+            if (tempAvatarImage) {
+                userInfo.avatar = tempAvatarImage;
+            }
+            
+            // 保存到localStorage
+            localStorage.setItem('userInfo', JSON.stringify(userInfo));
+            
+            // 更新users数组中的用户信息
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const userIndex = users.findIndex(u => u.account === userInfo.account);
+            if (userIndex !== -1) {
+                users[userIndex] = userInfo;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            
+            updateUIForLoggedInUser();
+            showToast('保存成功');
+            
+            setTimeout(() => {
+                navigateTo('home');
+            }, 500);
+        }
+
+        // 显示设置页面
+        function showSettings() {
+            if (!checkLoginAndPrompt()) return;
+            
+            previousPage = 'profile';
+            
+            // 填充表单
+            document.getElementById('settings-nickname').value = userInfo.nickname || '';
+            document.getElementById('settings-signature').value = userInfo.signature || '';
+            document.getElementById('settings-name').value = userInfo.name || '';
+            document.getElementById('settings-student-id').value = userInfo.studentId || '';
+            document.getElementById('settings-major').value = userInfo.major || '';
+            
+            // 显示头像
+            settingsAvatarImage = userInfo.avatar || '';
+            if (settingsAvatarImage) {
+                document.getElementById('settings-avatar-preview').src = settingsAvatarImage;
+                document.getElementById('settings-avatar-preview').style.display = 'block';
+                document.getElementById('settings-avatar-placeholder').style.display = 'none';
+            } else {
+                document.getElementById('settings-avatar-preview').style.display = 'none';
+                document.getElementById('settings-avatar-placeholder').style.display = 'block';
+            }
+            
+            navigateTo('settings');
+        }
+
+        // 处理设置页面头像上传
+        function handleSettingsAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                settingsAvatarImage = e.target.result;
+                document.getElementById('settings-avatar-preview').src = settingsAvatarImage;
+                document.getElementById('settings-avatar-preview').style.display = 'block';
+                document.getElementById('settings-avatar-placeholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 保存设置
+        function saveSettings() {
+            const nickname = document.getElementById('settings-nickname').value.trim();
+            const signature = document.getElementById('settings-signature').value.trim();
+            const name = document.getElementById('settings-name').value.trim();
+            const studentId = document.getElementById('settings-student-id').value.trim();
+            const major = document.getElementById('settings-major').value.trim();
+            
+            if (!nickname) {
+                showToast('请输入昵称');
+                return;
+            }
+            
+            userInfo.nickname = nickname;
+            userInfo.signature = signature;
+            userInfo.name = name;
+            userInfo.studentId = studentId;
+            userInfo.major = major;
+            if (settingsAvatarImage) {
+                userInfo.avatar = settingsAvatarImage;
+            }
+            
+            // 保存到localStorage
+            localStorage.setItem('userInfo', JSON.stringify(userInfo));
+            
+            // 更新users数组中的用户信息
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const userIndex = users.findIndex(u => u.account === userInfo.account);
+            if (userIndex !== -1) {
+                users[userIndex] = userInfo;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            
+            updateUIForLoggedInUser();
+            showToast('保存成功');
+            
+            setTimeout(() => {
+                navigateTo('profile');
+            }, 500);
+        }
+
+        // 取消设置
+        function cancelSettings() {
+            navigateTo('profile');
+        }
+    </script>
+</body>
+</html>
