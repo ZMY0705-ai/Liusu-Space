@@ -1,34 +1,92 @@
 <template>
   <div class="me-container">
-    <!-- 用户信息卡片 -->
-    <div class="user-card">
-      <svg class="leaf-decoration" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path d="M50 0 C80 0 100 20 100 50 C100 80 80 100 50 100 C20 100 0 80 0 50 C0 20 20 0 50 0 Z" fill="#A8D5A1" opacity="0.5"/>
-      </svg>
-      <div class="user-avatar">
-        {{ getAuthorInitial(authStore.user?.nickname || 'U') }}
+    <!-- 小红书风格的个人主页头部 -->
+    <div class="profile-header">
+      <!-- 背景封面 -->
+      <div class="cover-banner">
+        <div class="cover-gradient"></div>
       </div>
-      <div class="user-info">
-        <h2 class="user-name">{{ authStore.user?.nickname || '未登录' }}</h2>
-        <p class="user-detail">{{ authStore.user?.account || '' }}</p>
-        <p v-if="authStore.user?.signature" class="user-signature">{{ authStore.user.signature }}</p>
+
+      <!-- 头像和信息区域 -->
+      <div class="profile-info-section">
+        <!-- 头像（一半在背景上，一半在白色区域） -->
+        <div class="avatar-wrapper">
+          <div class="user-avatar">
+            <img 
+              v-if="authStore.user?.avatar" 
+              :src="getFullAvatarUrl(authStore.user.avatar)" 
+              alt="头像"
+              class="avatar-img"
+            />
+            <span v-else class="avatar-placeholder">{{ getAuthorInitial(authStore.user?.nickname || 'U') }}</span>
+          </div>
+        </div>
+
+        <!-- 用户信息 -->
+        <div class="user-details">
+          <!-- 昵称 -->
+          <h2 class="nickname">{{ authStore.user?.nickname || '未登录' }}</h2>
+          
+          <!-- 专业标签（胶囊样式） -->
+          <div v-if="authStore.user?.is_major_public && authStore.user?.major" class="tags-row">
+            <span class="tag-pill"> {{ authStore.user.major }}</span>
+          </div>
+
+          <!-- 个性签名 -->
+          <p v-if="authStore.user?.bio || authStore.user?.signature" class="bio-text">
+            {{ authStore.user?.bio || authStore.user?.signature }}
+          </p>
+
+          <!-- 姓名和专业信息气泡 -->
+          <div v-if="authStore.user?.is_real_name_public && authStore.user?.real_name" class="info-bubble">
+            <span class="bubble-label">姓名：</span>
+            <span class="bubble-value">{{ authStore.user.real_name }}</span>
+          </div>
+          <div v-if="authStore.user?.is_major_public && authStore.user?.major" class="info-bubble">
+            <span class="bubble-label">专业：</span>
+            <span class="bubble-value">{{ authStore.user.major }}</span>
+          </div>
+        </div>
+
+        <!-- 编辑资料按钮 -->
+        <van-button 
+          v-if="authStore.isAuthenticated"
+          size="small"
+          @click="handleEditProfile"
+          class="edit-profile-btn"
+        >
+          编辑资料
+        </van-button>
       </div>
+
+      <!-- 数据统计栏 -->
+      <div v-if="authStore.isAuthenticated" class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-number">{{ myWorks.length }}</span>
+          <span class="stat-label">作品</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">{{ myDrafts.length }}</span>
+          <span class="stat-label">草稿</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">{{ myFavorites.length }}</span>
+          <span class="stat-label">收藏</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 退出登录按钮（在功能菜单下方） -->
+    <div v-if="authStore.isAuthenticated" class="logout-section">
       <van-button 
-        v-if="authStore.isAuthenticated"
-        size="small" 
+        block
+        plain
         type="default"
         @click="handleLogout"
-        class="logout-btn"
+        class="logout-btn-full"
       >
-        退出
+        退出登录
       </van-button>
-      <router-link 
-        v-else 
-        to="/login"
-        class="btn-login"
-      >
-        登录/注册
-      </router-link>
     </div>
 
     <!-- 功能菜单 - 大网格卡片风格 -->
@@ -175,13 +233,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onActivated } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { getWorks, deleteWork, getMyFavorites } from '@/api/work'
 import { showToast, showDialog } from 'vant'
 import { Icon as VanIcon } from 'vant'
 import type { Work } from '@/types/api'
+
+// 组件名称（用于 keep-alive）
+defineOptions({
+  name: 'MeCenter'
+})
 
 const router = useRouter()
 const route = useRoute()
@@ -195,6 +258,16 @@ const myWorks = ref<Work[]>([])
 const myDrafts = ref<Work[]>([])
 const myFavorites = ref<Work[]>([])
 const loading = ref(false)
+
+// 获取完整头像URL
+const getFullAvatarUrl = (url: string | undefined) => {
+  if (!url) return ''
+  // 如果是相对路径，拼接后端地址
+  if (url.startsWith('/')) {
+    return `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}${url}`
+  }
+  return url
+}
 
 // 获取作者首字母
 const getAuthorInitial = (name: string) => {
@@ -303,6 +376,11 @@ async function handleDeleteWork(workId: number) {
   }
 }
 
+// 编辑资料
+function handleEditProfile() {
+  router.push('/profile/edit')
+}
+
 // 退出登录
 function handleLogout() {
   authStore.logout()
@@ -320,6 +398,12 @@ onMounted(() => {
   
   loadMyContent()
 })
+
+// 当页面被激活时（从其他页面返回），重新获取用户信息
+onActivated(async () => {
+  console.log('[MeCenter] 页面被激活，刷新用户信息')
+  await authStore.fetchUser()
+})
 </script>
 
 <style scoped>
@@ -329,78 +413,206 @@ onMounted(() => {
   padding-bottom: 20px;
 }
 
-/* 用户信息卡片 */
-.user-card {
+/* === 小红书风格个人主页头部 === */
+.profile-header {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 30px 20px;
-  background: linear-gradient(135deg, var(--matcha-green), #A8D5A1);
-  color: white;
+  background: var(--pure-white);
+  padding-bottom: 20px;
+}
+
+/* 背景封面 */
+.cover-banner {
+  position: relative;
+  width: 100%;
+  height: 140px;
   overflow: hidden;
 }
 
-.leaf-decoration {
+.cover-gradient {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #64A386 0%, #A8D5A1 50%, #F5B342 100%);
+  position: relative;
+}
+
+.cover-gradient::before {
+  content: '';
   position: absolute;
-  top: -20px;
-  right: -20px;
-  width: 120px;
-  height: 120px;
-  opacity: 0.3;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.2) 0%, transparent 40%);
+}
+
+/* 头像和信息区域 */
+.profile-info-section {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 0 20px;
+  margin-top: -45px; /* 让头像浮层效果 */
+}
+
+.avatar-wrapper {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
 }
 
 .user-avatar {
-  width: 70px;
-  height: 70px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.25);
-  color: white;
+  background: var(--pure-white);
+  border: 4px solid var(--pure-white);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  font-size: 32px;
   font-weight: 600;
-  flex-shrink: 0;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-}
-
-.user-info {
-  flex: 1;
-}
-
-.user-name {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 0 0 4px 0;
-}
-
-.user-detail {
-  font-size: 14px;
-  opacity: 0.9;
-  margin: 0 0 4px 0;
-}
-
-.user-signature {
-  font-size: 13px;
-  opacity: 0.8;
-  margin: 0;
-}
-
-.logout-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-}
-
-.btn-login {
-  padding: 8px 16px;
-  background: white;
   color: var(--matcha-green);
-  border-radius: 20px;
-  text-decoration: none;
+}
+
+/* 用户信息 */
+.user-details {
+  flex: 1;
+  padding-top: 50px; /* 为头像留出空间 */
+  min-width: 0;
+}
+
+.nickname {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink-dark);
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tag-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #F5F5F5;
+  color: var(--text-secondary);
+  font-size: 12px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.bio-text {
   font-size: 14px;
-  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 信息气泡 */
+.info-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(100, 163, 134, 0.1);
+  border-radius: 12px;
+  margin-right: 8px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.info-bubble:hover {
+  background: rgba(100, 163, 134, 0.15);
+  transform: translateY(-1px);
+}
+
+.bubble-label {
+  color: #999;
+  font-weight: 500;
+}
+
+.bubble-value {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* 编辑资料按钮 */
+.edit-profile-btn {
+  margin-top: 50px; /* 为头像留出空间 */
+  flex-shrink: 0;
+  background: var(--pure-white);
+  border: 1px solid #E0E0E0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 16px;
+  padding: 6px 16px;
+  height: auto;
+  min-width: 70px;
+}
+
+.edit-profile-btn:active {
+  background: #F5F5F5;
+}
+
+/* 数据统计栏 */
+.stats-bar {
+  display: flex;
+  justify-content: space-around;
+  padding: 16px 20px 0;
+  border-top: 1px solid #F0F0F0;
+  margin-top: 16px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stat-item:active {
+  transform: scale(0.95);
+}
+
+.stat-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink-dark);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 /* 功能菜单 - 大网格 */

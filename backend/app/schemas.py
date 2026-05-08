@@ -19,9 +19,12 @@ class UserUpdate(BaseModel):
     nickname: Optional[str] = None
     avatar: Optional[str] = None
     signature: Optional[str] = None
+    bio: Optional[str] = None
     real_name: Optional[str] = None
     student_id: Optional[str] = None
     major: Optional[str] = None
+    is_real_name_public: Optional[bool] = None
+    is_major_public: Optional[bool] = None
 
 class UserResponse(BaseModel):
     id: int
@@ -29,9 +32,12 @@ class UserResponse(BaseModel):
     nickname: str
     avatar: Optional[str] = None
     signature: Optional[str] = None
+    bio: Optional[str] = None
     real_name: Optional[str] = None
     student_id: Optional[str] = None
     major: Optional[str] = None
+    is_real_name_public: bool = False
+    is_major_public: bool = False
 
     class Config:
         from_attributes = True

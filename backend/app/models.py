@@ -13,9 +13,12 @@ class User(Base):
     nickname = Column(String(30), nullable=False)
     avatar = Column(String(500))
     signature = Column(String(100))
+    bio = Column(Text)  # 个性签名（最多150字）
     real_name = Column(String(20))
     student_id = Column(String(20))
     major = Column(String(50))
+    is_real_name_public = Column(SmallInteger, default=0)  # 是否公开姓名（默认 false）
+    is_major_public = Column(SmallInteger, default=0)  # 是否公开专业（默认 false）
     role = Column(SmallInteger, default=0)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())

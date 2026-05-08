@@ -15,6 +15,9 @@ export interface User {
   major?: string
   avatar?: string
   signature?: string
+  bio?: string
+  is_real_name_public?: boolean
+  is_major_public?: boolean
   role: number
   created_at: string
   updated_at: string
@@ -50,6 +53,9 @@ export interface UserUpdate {
   major?: string
   avatar?: string
   signature?: string
+  bio?: string
+  is_real_name_public?: boolean
+  is_major_public?: boolean
 }
 
 // 作品相关类型

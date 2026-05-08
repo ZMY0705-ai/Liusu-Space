@@ -1,10 +1,18 @@
 <template>
   <div class="app-container">
     <MobileLayout v-if="layout === 'mobile'">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <keep-alive :include="['MeCenter']">
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
     </MobileLayout>
     <div v-else>
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <keep-alive :include="['MeCenter']">
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
     </div>
   </div>
 </template>
