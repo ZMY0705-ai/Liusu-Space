@@ -116,6 +116,13 @@ export function createPostComment(postId: number, data: { content: string; paren
   return http.post<any>(`/forum/posts/${postId}/comments`, data)
 }
 
+// 获取我的帖子列表
+export function getMyPosts(skip: number = 0, limit: number = 20) {
+  return http.get<any[]>('/forum/my-posts', {
+    params: { skip, limit }
+  })
+}
+
 // ==================== 消息通知相关 API ====================
 
 // 获取我的通知列表

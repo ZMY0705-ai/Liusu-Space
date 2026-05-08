@@ -35,7 +35,7 @@ const actions = ref([
   },
   {
     name: '发表作品',
-    icon: 'book',
+    icon: 'fire-o',
     color: '#CDE2EB',
     value: 'publish'
   },

@@ -127,3 +127,19 @@ def list_post_comments(post_id: int, db: Session = Depends(get_db)):
     
     # 只返回顶级评论（parent_id为None）
     return build_comment_tree(comments, parent_id=None)
+
+@router.get("/my-posts", response_model=List[schemas.PostResponse])
+def get_my_posts(
+    current_user: models.User = Depends(get_current_user),
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    """获取当前用户的帖子列表"""
+    from sqlalchemy.orm import joinedload
+    posts = db.query(models.ForumPost).options(
+        joinedload(models.ForumPost.author)
+    ).filter(
+        models.ForumPost.author_id == current_user.id
+    ).offset(skip).limit(limit).all()
+    return posts

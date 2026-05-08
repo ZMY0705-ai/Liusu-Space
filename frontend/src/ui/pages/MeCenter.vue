@@ -68,6 +68,10 @@
           <span class="stat-number">{{ myFavorites.length }}</span>
           <span class="stat-label">收藏</span>
         </div>
+        <div class="stat-item">
+          <span class="stat-number">{{ myPosts.length }}</span>
+          <span class="stat-label">讨论</span>
+        </div>
       </div>
     </div>
 
@@ -103,6 +107,12 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
         </div>
         <span>我的收藏</span>
+      </div>
+      <div class="menu-grid-item" @click="activeTab = 'posts'">
+        <div class="grid-icon-wrapper posts-bg">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <span>我的讨论</span>
       </div>
     </div>
 
@@ -219,6 +229,42 @@
       </div>
     </div>
 
+    <!-- 我的讨论列表 -->
+    <div v-if="authStore.isAuthenticated && activeTab === 'posts'" class="content-section">
+      <h3 class="section-title">💬 我的讨论</h3>
+      
+      <!-- 加载状态 -->
+      <div v-if="loading" class="loading-state">
+        <van-loading type="spinner" size="24px" color="#64A386" />
+        <p>加载中...</p>
+      </div>
+
+      <!-- 空状态 -->
+      <div v-else-if="myPosts.length === 0" class="empty-state">
+        <p>暂无讨论，去论坛发表你的观点吧！</p>
+      </div>
+
+      <!-- 讨论列表 -->
+      <div v-else class="posts-list">
+        <div 
+          v-for="post in myPosts" 
+          :key="post.id" 
+          class="post-item"
+          @click="handlePostClick(post.id)"
+        >
+          <van-icon name="chat-o" size="20" color="#64A386" style="margin-right: 8px;" />
+          <div class="post-info">
+            <h4 class="post-title">{{ post.title }}</h4>
+            <p class="post-excerpt">{{ getExcerpt(post.content) }}</p>
+            <div class="post-meta">
+              <span class="post-comments">💬 {{ post.comment_count || 0 }} 回复</span>
+              <span class="post-time">{{ formatTime(post.created_at) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 未登录提示 -->
     <div v-if="!authStore.isAuthenticated" class="not-login">
       <p>请先登录后查看个人中心</p>
@@ -231,7 +277,7 @@
 import { ref, onMounted, onActivated } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { getWorks, deleteWork, getMyFavorites } from '@/api/work'
+import { getWorks, deleteWork, getMyFavorites, getMyPosts } from '@/api/work'
 import { showToast, showDialog } from 'vant'
 import { Icon as VanIcon } from 'vant'
 import type { Work } from '@/types/api'
@@ -252,6 +298,7 @@ const activeTab = ref('works')
 const myWorks = ref<Work[]>([])
 const myDrafts = ref<Work[]>([])
 const myFavorites = ref<Work[]>([])
+const myPosts = ref<any[]>([])
 const loading = ref(false)
 
 // 获取完整头像URL
@@ -320,6 +367,9 @@ async function loadMyContent() {
     
     // 加载收藏列表
     await loadFavorites()
+    
+    // 加载讨论列表
+    await loadMyPosts()
   } catch (error) {
     console.error('加载内容失败:', error)
   } finally {
@@ -337,9 +387,24 @@ async function loadFavorites() {
   }
 }
 
+// 加载我的帖子列表
+async function loadMyPosts() {
+  try {
+    const response = await getMyPosts(0, 100)
+    myPosts.value = response.data || []
+  } catch (error) {
+    console.error('加载讨论失败:', error)
+  }
+}
+
 // 点击作品
 function handleWorkClick(workId: number) {
   router.push(`/work/${workId}`)
+}
+
+// 点击帖子
+function handlePostClick(postId: number) {
+  router.push(`/forum/${postId}`)
 }
 
 // 编辑作品
@@ -387,7 +452,7 @@ function handleLogout() {
 onMounted(() => {
   // 检查URL参数，如果有tab参数则切换到对应标签
   const tabParam = route.query.tab as string
-  if (tabParam && ['works', 'drafts', 'favorites'].includes(tabParam)) {
+  if (tabParam && ['works', 'drafts', 'favorites', 'posts'].includes(tabParam)) {
     activeTab.value = tabParam
   }
   
@@ -612,19 +677,21 @@ onActivated(async () => {
 
 /* 功能菜单 - 大网格 */
 .menu-section {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  padding: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
 }
 
 .menu-grid-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   transition: all 0.2s;
+  flex: 1;
 }
 
 .menu-grid-item:active {
@@ -644,6 +711,7 @@ onActivated(async () => {
 .works-bg { background: #E8F5E9; color: var(--matcha-green); }
 .drafts-bg { background: #FFFDE7; color: #FBC02D; }
 .fav-bg { background: #FFF8E1; color: var(--warm-yellow); }
+.posts-bg { background: #E3F2FD; color: #1976D2; }
 
 .menu-grid-item span {
   font-size: 13px;
@@ -768,6 +836,66 @@ onActivated(async () => {
 }
 
 .work-time {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* 帖子列表 */
+.posts-list {
+  margin-bottom: 24px;
+}
+
+.post-item {
+  background: var(--pure-white);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.2s;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+}
+
+.post-item:active {
+  opacity: 0.7;
+}
+
+.post-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink-dark);
+  margin: 0 0 8px 0;
+}
+
+.post-excerpt {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-comments {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.post-time {
   font-size: 12px;
   color: var(--text-light);
 }
