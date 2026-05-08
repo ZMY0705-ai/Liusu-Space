@@ -69,6 +69,12 @@ const router = createRouter({
       meta: { requiresAuth: true, layout: 'mobile' }
     },
     {
+      path: '/user/:id',
+      name: 'UserProfile',
+      component: () => import('@/ui/pages/UserProfile.vue'),
+      meta: { requiresAuth: false, layout: 'mobile' }
+    },
+    {
       path: '/profile/edit',
       name: 'EditProfile',
       component: () => import('@/ui/pages/EditProfile.vue'),

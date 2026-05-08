@@ -188,3 +188,53 @@ def upload_avatar(
             status_code=500,
             detail=f"上传失败: {str(e)}"
         )
+
+@router.get("/profile/{user_id}")
+def get_public_profile(user_id: int, db: Session = Depends(get_db)):
+    """
+    获取用户的公开主页信息
+    仅返回公开信息，不包含草稿、私密作品等隐私数据
+    """
+    print(f'\n=== 获取用户公开主页 ===')
+    print(f'目标用户ID: {user_id}')
+    
+    # 获取用户基本信息
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    
+    # 获取用户已发布的作品（status=1表示已发布）
+    published_works = db.query(models.Work).filter(
+        models.Work.author_id == user_id,
+        models.Work.status == 1  # 只返回已发布的作品
+    ).order_by(models.Work.created_at.desc()).all()
+    
+    # 构建返回数据（仅公开信息）
+    profile_data = {
+        "id": user.id,
+        "nickname": user.nickname,
+        "avatar": user.avatar,
+        "bio": user.bio or user.signature,
+        # 根据公开设置决定是否返回姓名和专业
+        "real_name": user.real_name if user.is_real_name_public else None,
+        "major": user.major if user.is_major_public else None,
+        "published_works": [
+            {
+                "id": work.id,
+                "title": work.title,
+                "content": work.content[:200] + "..." if len(work.content) > 200 else work.content,  # 截取摘要
+                "cover_image": work.cover_image,
+                "like_count": work.like_count,
+                "favorite_count": work.favorite_count,
+                "view_count": work.view_count,
+                "created_at": work.created_at
+            }
+            for work in published_works
+        ],
+        "works_count": len(published_works)
+    }
+    
+    print(f'返回作品数: {len(published_works)}')
+    print(f'=========================\n')
+    
+    return profile_data

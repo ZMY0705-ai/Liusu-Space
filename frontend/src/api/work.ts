@@ -82,6 +82,11 @@ export function getMyFavorites() {
   return http.get<Work[]>('/favorites')
 }
 
+// 获取用户公开主页信息
+export function getUserPublicProfile(userId: number) {
+  return http.get<any>(`/users/profile/${userId}`)
+}
+
 // ==================== 论坛相关 API ====================
 
 // 获取帖子列表

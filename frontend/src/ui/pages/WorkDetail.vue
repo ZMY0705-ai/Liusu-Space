@@ -29,11 +29,11 @@
         
         <!-- 作者信息 -->
         <div class="author-section">
-          <div class="author-avatar">
+          <div class="author-avatar" @click="goToAuthorProfile">
             {{ getAuthorInitial(work.author?.nickname || 'A') }}
           </div>
           <div class="author-details">
-            <span class="author-name">{{ work.author?.nickname || '匿名' }}</span>
+            <span class="author-name" @click="goToAuthorProfile">{{ work.author?.nickname || '匿名' }}</span>
             <span class="publish-time">{{ formatTime(work.created_at) }}</span>
           </div>
         </div>
@@ -245,6 +245,12 @@ function handleEdit() {
   router.push(`/editor/${workId.value}`)
 }
 
+// 跳转到作者主页
+function goToAuthorProfile() {
+  if (!work.value?.author?.id) return
+  router.push(`/user/${work.value.author.id}`)
+}
+
 // 返回
 function goBack() {
   router.back()
@@ -370,6 +376,13 @@ onMounted(() => {
   font-size: 16px;
   font-weight: 600;
   flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.author-avatar:active {
+  transform: scale(0.95);
+  opacity: 0.8;
 }
 
 .author-details {
@@ -383,6 +396,12 @@ onMounted(() => {
   font-size: 15px;
   font-weight: 500;
   color: var(--matcha-green);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.author-name:active {
+  opacity: 0.7;
 }
 
 .publish-time {
