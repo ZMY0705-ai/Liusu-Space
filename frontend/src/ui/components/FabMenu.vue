@@ -81,11 +81,11 @@ function onSelect(action: any) {
 }
 
 .fab-button {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background: var(--green-primary);
-  box-shadow: 0 4px 12px rgba(100, 163, 134, 0.4);
+  background: #F5B342;
+  box-shadow: 0 6px 16px rgba(47, 93, 80, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,11 +94,42 @@ function onSelect(action: any) {
 }
 
 .fab-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(100, 163, 134, 0.5);
+  transform: scale(1.15);
+  box-shadow: 0 8px 24px rgba(47, 93, 80, 0.5);
 }
 
 .fab-button:active {
   transform: scale(0.95);
+}
+
+/* 弹出菜单样式优化 */
+.fab-menu :deep(.van-action-sheet) {
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 菜单项文字颜色改为深色 */
+.fab-menu :deep(.van-action-sheet__item) {
+  color: #2F4F4F !important;
+  font-weight: 500;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+/* 菜单项悬停/点击背景色 */
+.fab-menu :deep(.van-action-sheet__item):hover,
+.fab-menu :deep(.van-action-sheet__item):active {
+  background-color: #F0F7F0 !important;
+}
+
+/* 取消按钮样式 */
+.fab-menu :deep(.van-action-sheet__cancel) {
+  color: #5C6B5D !important;
+  font-weight: 500;
+}
+
+.fab-menu :deep(.van-action-sheet__cancel):hover,
+.fab-menu :deep(.van-action-sheet__cancel):active {
+  background-color: #F0F7F0 !important;
 }
 </style>

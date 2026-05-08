@@ -57,12 +57,6 @@
     <div v-if="authStore.isAuthenticated && activeTab === 'works'" class="content-section">
       <h3 class="section-title">📚 我的作品</h3>
       
-      <!-- 调试信息 -->
-      <div style="background: #fff3cd; padding: 10px; margin: 10px 0; border-radius: 8px; font-size: 12px;">
-        <p style="margin: 0;">myWorks.length: {{ myWorks.length }}</p>
-        <p style="margin: 0;">myWorks数据: {{ JSON.stringify(myWorks.map(w => ({id: w.id, title: w.title}))) }}</p>
-      </div>
-      
       <!-- 加载状态 -->
       <div v-if="loading" class="loading-state">
         <van-loading type="spinner" size="24px" color="#64A386" />

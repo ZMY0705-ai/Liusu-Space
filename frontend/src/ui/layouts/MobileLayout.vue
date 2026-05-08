@@ -1,5 +1,17 @@
 <template>
   <div class="mobile-layout">
+    <!-- 大面积波浪背景装饰 -->
+    <div class="wave-bg-decoration">
+      <svg class="wave-left" viewBox="0 0 400 800" preserveAspectRatio="none">
+        <path d="M0 0 Q100 100 0 200 Q80 300 0 400 Q120 500 0 600 Q60 700 0 800" fill="#FEEE9A" opacity="0.3"/>
+        <path d="M0 50 Q80 150 0 250 Q60 350 0 450 Q100 550 0 650 Q40 750 0 800" fill="#8EB89C" opacity="0.25"/>
+      </svg>
+      <svg class="wave-right" viewBox="0 0 400 800" preserveAspectRatio="none">
+        <path d="M400 0 Q300 100 400 200 Q320 300 400 400 Q280 500 400 600 Q340 700 400 800" fill="#8EB89C" opacity="0.2"/>
+        <path d="M400 80 Q320 180 400 280 Q340 380 400 480 Q300 580 400 680 Q360 750 400 800" fill="#FEEE9A" opacity="0.25"/>
+      </svg>
+    </div>
+    
     <div class="content">
       <router-view />
     </div>
@@ -40,11 +52,42 @@ watch(
   display: flex;
   flex-direction: column;
   background: var(--paper-white);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 波浪背景装饰 */
+.wave-bg-decoration {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wave-left {
+  position: absolute;
+  left: -50px;
+  top: 0;
+  width: 150px;
+  height: 100%;
+}
+
+.wave-right {
+  position: absolute;
+  right: -50px;
+  top: 0;
+  width: 150px;
+  height: 100%;
 }
 
 .content {
   flex: 1;
-  padding-bottom: 50px; /* 为底部导航栏预留空间 */
+  padding-bottom: 50px;
+  position: relative;
+  z-index: 1;
 }
 
 .custom-tabbar :deep(.van-tabbar) {
