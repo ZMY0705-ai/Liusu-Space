@@ -26,11 +26,6 @@
         <div class="user-details">
           <!-- 昵称 -->
           <h2 class="nickname">{{ authStore.user?.nickname || '未登录' }}</h2>
-          
-          <!-- 专业标签（胶囊样式） -->
-          <div v-if="authStore.user?.is_major_public && authStore.user?.major" class="tags-row">
-            <span class="tag-pill"> {{ authStore.user.major }}</span>
-          </div>
 
           <!-- 个性签名 -->
           <p v-if="authStore.user?.bio || authStore.user?.signature" class="bio-text">
