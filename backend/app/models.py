@@ -59,10 +59,13 @@ class WorkComment(Base):
     work_id = Column(BIGINT(unsigned=True), ForeignKey("works.id"), nullable=False)
     user_id = Column(BIGINT(unsigned=True), ForeignKey("users.id"), nullable=False)
     content = Column(String(500), nullable=False)
+    parent_id = Column(BIGINT(unsigned=True), ForeignKey("work_comments.id"))
     created_at = Column(DateTime, server_default=func.now())
 
     work = relationship("Work", back_populates="comments")
     user = relationship("User", back_populates="comments")
+    parent = relationship("WorkComment", remote_side=[id], back_populates="replies")
+    replies = relationship("WorkComment", remote_side=[parent_id])
 
 class WorkLike(Base):
     __tablename__ = "work_likes"
@@ -110,7 +113,8 @@ class PostComment(Base):
 
     post = relationship("ForumPost", back_populates="comments")
     user = relationship("User", back_populates="post_comments")
-    parent = relationship("PostComment", remote_side=[id])
+    parent = relationship("PostComment", remote_side=[id], back_populates="replies")
+    replies = relationship("PostComment", remote_side=[parent_id])
 
 class Notification(Base):
     __tablename__ = "notifications"

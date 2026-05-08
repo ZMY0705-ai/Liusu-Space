@@ -59,6 +59,20 @@ class WorkUpdate(BaseModel):
 
 class WorkCommentCreate(BaseModel):
     content: str
+    parent_id: Optional[int] = None  # 父评论ID，为空表示一级评论
+
+class WorkCommentResponse(BaseModel):
+    id: int
+    work_id: int
+    user_id: int
+    content: str
+    parent_id: Optional[int] = None
+    created_at: datetime
+    user: Optional[UserResponse] = None
+    replies: List['WorkCommentResponse'] = []  # 嵌套回复列表
+
+    class Config:
+        from_attributes = True
 
 class WorkResponse(BaseModel):
     id: int

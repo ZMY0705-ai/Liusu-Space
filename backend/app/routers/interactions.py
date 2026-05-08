@@ -20,10 +20,20 @@ def add_work_comment(
     if not work:
         raise HTTPException(status_code=404, detail="Work not found")
     
+    # 如果指定了parent_id，验证父评论是否存在
+    if comment.parent_id:
+        parent_comment = db.query(models.WorkComment).filter(
+            models.WorkComment.id == comment.parent_id,
+            models.WorkComment.work_id == work_id
+        ).first()
+        if not parent_comment:
+            raise HTTPException(status_code=404, detail="Parent comment not found")
+    
     db_comment = models.WorkComment(
         content=comment.content,
         work_id=work_id,
-        user_id=current_user.id
+        user_id=current_user.id,
+        parent_id=comment.parent_id
     )
     db.add(db_comment)
     
@@ -43,13 +53,52 @@ def add_work_comment(
         db.add(notification)
         
     db.commit()
-    return {"message": "Comment added"}
+    db.refresh(db_comment)
+    return {"message": "Comment added", "comment_id": db_comment.id}
 
 @router.get("/works/{work_id}/comments")
 def list_work_comments(work_id: int, db: Session = Depends(get_db)):
     from sqlalchemy.orm import joinedload
-    comments = db.query(models.WorkComment).options(joinedload(models.WorkComment.user)).filter(models.WorkComment.work_id == work_id).all()
-    return comments
+    
+    # 获取所有评论（包括用户信息）
+    comments = db.query(models.WorkComment).options(
+        joinedload(models.WorkComment.user)
+    ).filter(
+        models.WorkComment.work_id == work_id
+    ).all()
+    
+    # 构建树形结构
+    def build_comment_tree(comments_list, parent_id=None):
+        tree = []
+        for comment in comments_list:
+            if comment.parent_id == parent_id:
+                comment_dict = {
+                    "id": comment.id,
+                    "work_id": comment.work_id,
+                    "user_id": comment.user_id,
+                    "content": comment.content,
+                    "parent_id": comment.parent_id,
+                    "created_at": comment.created_at,
+                    "user": {
+                        "id": comment.user.id,
+                        "account": comment.user.account,
+                        "nickname": comment.user.nickname,
+                        "avatar": comment.user.avatar,
+                        "signature": comment.user.signature,
+                        "bio": comment.user.bio,
+                        "real_name": comment.user.real_name,
+                        "student_id": comment.user.student_id,
+                        "major": comment.user.major,
+                        "is_real_name_public": bool(comment.user.is_real_name_public),
+                        "is_major_public": bool(comment.user.is_major_public)
+                    } if comment.user else None,
+                    "replies": build_comment_tree(comments_list, comment.id)
+                }
+                tree.append(comment_dict)
+        return tree
+    
+    # 只返回顶级评论（parent_id为None）
+    return build_comment_tree(comments, parent_id=None)
 
 # --- Work Likes ---
 @router.post("/works/{work_id}/like")

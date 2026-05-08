@@ -37,53 +37,7 @@
       </div>
 
       <!-- 回复区 -->
-      <div class="comments-section">
-        <h3 class="section-title">💬 回复 ({{ comments.length }})</h3>
-        
-        <!-- 回复列表 -->
-        <div v-if="comments.length > 0" class="comments-list">
-          <div v-for="comment in comments" :key="comment.id" class="comment-item">
-            <div class="comment-avatar">
-              {{ getAuthorInitial(comment.user?.nickname || 'U') }}
-            </div>
-            <div class="comment-content">
-              <div class="comment-header">
-                <span class="comment-author">{{ comment.user?.nickname || '匿名' }}</span>
-                <span class="comment-time">{{ formatTime(comment.created_at) }}</span>
-              </div>
-              <p class="comment-text">{{ comment.content }}</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 空状态 -->
-        <div v-else class="empty-comments">
-          <p>暂无回复，快来发表第一个回复吧！</p>
-        </div>
-
-        <!-- 发表回复 -->
-        <div class="comment-input-section">
-          <van-field
-            v-model="commentContent"
-            type="textarea"
-            placeholder="写下你的想法..."
-            rows="3"
-            autosize
-            maxlength="500"
-            show-word-limit
-          />
-          <van-button 
-            type="primary" 
-            size="small"
-            @click="handleSubmitComment"
-            :loading="submittingComment"
-            color="#64A386"
-            block
-          >
-            发表回复
-          </van-button>
-        </div>
-      </div>
+      <CommentSection :target-id="postId" target-type="post" />
     </div>
 
     <!-- 错误状态 -->
@@ -100,8 +54,9 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { getForumPostById, getPostComments, createPostComment } from '@/api/work'
+import { getForumPostById } from '@/api/work'
 import { showToast } from 'vant'
+import CommentSection from '@/ui/components/CommentSection.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -113,9 +68,6 @@ const postId = computed(() => Number(route.params.id))
 // 数据状态
 const post = ref<any>(null)
 const loading = ref(false)
-const comments = ref<any[]>([])
-const commentContent = ref('')
-const submittingComment = ref(false)
 
 // 获取作者首字母
 const getAuthorInitial = (name: string) => {
@@ -165,50 +117,6 @@ async function loadPostDetail() {
   }
 }
 
-// 加载回复列表
-async function loadComments() {
-  try {
-    const response = await getPostComments(postId.value)
-    comments.value = response.data || []
-  } catch (error) {
-    console.error('加载回复失败:', error)
-  }
-}
-
-// 发表回复
-async function handleSubmitComment() {
-  if (!authStore.isAuthenticated) {
-    showToast({ type: 'fail', message: '请先登录' })
-    router.push({ name: 'Login', query: { redirect: route.fullPath } })
-    return
-  }
-  
-  if (!commentContent.value.trim()) {
-    showToast({ type: 'fail', message: '请输入回复内容' })
-    return
-  }
-  
-  submittingComment.value = true
-  try {
-    await createPostComment(postId.value, { content: commentContent.value })
-    showToast({ type: 'success', message: '回复成功' })
-    commentContent.value = ''
-    
-    // 重新加载回复列表
-    await loadComments()
-    
-    // 更新回复数
-    if (post.value) {
-      post.value.comment_count = (post.value.comment_count || 0) + 1
-    }
-  } catch (error) {
-    console.error('回复失败:', error)
-    showToast({ type: 'fail', message: '回复失败' })
-  } finally {
-    submittingComment.value = false
-  }
-}
-
 // 返回
 function goBack() {
   router.back()
@@ -217,7 +125,6 @@ function goBack() {
 // 初始化
 onMounted(() => {
   loadPostDetail()
-  loadComments()
 })
 </script>
 

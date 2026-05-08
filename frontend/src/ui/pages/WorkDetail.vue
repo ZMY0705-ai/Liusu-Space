@@ -69,53 +69,7 @@
       </div>
 
       <!-- 评论区 -->
-      <div class="comments-section">
-        <h3 class="section-title">💬 评论 ({{ comments.length }})</h3>
-        
-        <!-- 评论列表 -->
-        <div v-if="comments.length > 0" class="comments-list">
-          <div v-for="comment in comments" :key="comment.id" class="comment-item">
-            <div class="comment-avatar">
-              {{ getAuthorInitial(comment.user?.nickname || 'U') }}
-            </div>
-            <div class="comment-bubble">
-              <div class="comment-header">
-                <span class="comment-author">{{ comment.user?.nickname || '匿名' }}</span>
-                <span class="comment-time">{{ formatTime(comment.created_at) }}</span>
-              </div>
-              <p class="comment-text">{{ comment.content }}</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 空状态 -->
-        <div v-else class="empty-comments">
-          <p>暂无评论，快来发表第一条评论吧！</p>
-        </div>
-
-        <!-- 发表评论 -->
-        <div class="comment-input-section">
-          <van-field
-            v-model="commentContent"
-            type="textarea"
-            placeholder="写下你的想法..."
-            rows="3"
-            autosize
-            maxlength="500"
-            show-word-limit
-          />
-          <van-button 
-            type="primary" 
-            size="small"
-            @click="handleSubmitComment"
-            :loading="submittingComment"
-            color="#64A386"
-            block
-          >
-            发表评论
-          </van-button>
-        </div>
-      </div>
+      <CommentSection :target-id="workId" target-type="work" />
     </div>
 
     <!-- 错误状态 -->
@@ -132,9 +86,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { getWorkById, toggleLike, toggleFavorite, getWorkComments, createWorkComment, getInteractionStatus } from '@/api/work'
+import { getWorkById, toggleLike, toggleFavorite, getInteractionStatus } from '@/api/work'
 import { showToast } from 'vant'
 import type { Work } from '@/types/api'
+import CommentSection from '@/ui/components/CommentSection.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -146,9 +101,6 @@ const workId = computed(() => Number(route.params.id))
 // 数据状态
 const work = ref<Work | null>(null)
 const loading = ref(false)
-const comments = ref<any[]>([])
-const commentContent = ref('')
-const submittingComment = ref(false)
 const isLiked = ref(false)
 const isFavorited = ref(false)
 
@@ -232,16 +184,6 @@ async function loadInteractionStatus() {
   }
 }
 
-// 加载评论列表
-async function loadComments() {
-  try {
-    const response = await getWorkComments(workId.value)
-    comments.value = response.data || []
-  } catch (error) {
-    console.error('加载评论失败:', error)
-  }
-}
-
 // 点赞/取消点赞
 async function handleLike() {
   if (!authStore.isAuthenticated) {
@@ -298,40 +240,6 @@ async function handleFavorite() {
   }
 }
 
-// 发表评论
-async function handleSubmitComment() {
-  if (!authStore.isAuthenticated) {
-    showToast({ type: 'fail', message: '请先登录' })
-    router.push({ name: 'Login', query: { redirect: route.fullPath } })
-    return
-  }
-  
-  if (!commentContent.value.trim()) {
-    showToast({ type: 'fail', message: '请输入评论内容' })
-    return
-  }
-  
-  submittingComment.value = true
-  try {
-    await createWorkComment(workId.value, { content: commentContent.value })
-    showToast({ type: 'success', message: '评论成功' })
-    commentContent.value = ''
-    
-    // 重新加载评论列表
-    await loadComments()
-    
-    // 更新评论数
-    if (work.value) {
-      work.value.comment_count = (work.value.comment_count || 0) + 1
-    }
-  } catch (error) {
-    console.error('评论失败:', error)
-    showToast({ type: 'fail', message: '评论失败' })
-  } finally {
-    submittingComment.value = false
-  }
-}
-
 // 编辑作品
 function handleEdit() {
   router.push(`/editor/${workId.value}`)
@@ -345,7 +253,6 @@ function goBack() {
 // 初始化
 onMounted(() => {
   loadWorkDetail()
-  loadComments()
 })
 </script>
 
