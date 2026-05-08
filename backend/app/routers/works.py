@@ -112,8 +112,24 @@ def delete_work(
     if work.author_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to delete this work")
     
+    # 级联删除关联数据，避免外键约束冲突
+    print(f'删除目标 ID: {work_id}')
+    print(f'正在删除的作品: {work.title}')
+    
+    # 1. 删除该作品的所有评论
+    db.query(models.WorkComment).filter(models.WorkComment.work_id == work_id).delete()
+    
+    # 2. 删除该作品的所有点赞记录
+    db.query(models.WorkLike).filter(models.WorkLike.work_id == work_id).delete()
+    
+    # 3. 删除该作品的所有收藏记录
+    db.query(models.WorkFavorite).filter(models.WorkFavorite.work_id == work_id).delete()
+    
+    # 4. 删除作品本身
     db.delete(work)
     db.commit()
+    
+    print(f'作品 {work_id} 及其关联数据已删除')
     return {"message": "Work deleted successfully"}
 
 @router.post("/upload-cover")
