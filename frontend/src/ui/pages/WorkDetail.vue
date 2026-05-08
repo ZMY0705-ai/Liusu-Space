@@ -78,7 +78,7 @@
             <div class="comment-avatar">
               {{ getAuthorInitial(comment.user?.nickname || 'U') }}
             </div>
-            <div class="comment-content">
+            <div class="comment-bubble">
               <div class="comment-header">
                 <span class="comment-author">{{ comment.user?.nickname || '匿名' }}</span>
                 <span class="comment-time">{{ formatTime(comment.created_at) }}</span>
@@ -352,7 +352,7 @@ onMounted(() => {
 <style scoped>
 .work-detail-container {
   min-height: 100vh;
-  background: #FAF9F6;
+  background: var(--paper-white);
   padding-bottom: 20px;
 }
 
@@ -362,9 +362,9 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background: rgba(250, 249, 246, 0.95);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 1px solid #F5F5F5;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -373,7 +373,7 @@ onMounted(() => {
 .detail-header h1 {
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--ink-dark);
   margin: 0;
 }
 
@@ -384,7 +384,7 @@ onMounted(() => {
 
 .header-actions .van-icon {
   cursor: pointer;
-  color: var(--green-primary);
+  color: var(--matcha-green);
 }
 
 /* 加载状态 */
@@ -426,13 +426,17 @@ onMounted(() => {
 
 /* 作品信息 */
 .work-info {
-  padding: 20px;
+  padding: 24px 20px;
+  background: var(--pure-white);
+  margin: 16px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
 }
 
 .work-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink-dark);
   margin-bottom: 16px;
   line-height: 1.4;
 }
@@ -444,14 +448,14 @@ onMounted(() => {
   gap: 12px;
   margin-bottom: 16px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #F5F5F5;
 }
 
 .author-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--green-primary);
+  background: var(--matcha-green);
   color: white;
   display: flex;
   align-items: center;
@@ -471,7 +475,7 @@ onMounted(() => {
 .author-name {
   font-size: 15px;
   font-weight: 500;
-  color: var(--green-primary);
+  color: var(--matcha-green);
 }
 
 .publish-time {
@@ -484,8 +488,6 @@ onMounted(() => {
   display: flex;
   gap: 24px;
   margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #f0f0f0;
 }
 
 .stat-item {
@@ -506,22 +508,23 @@ onMounted(() => {
 }
 
 .stat-item.active {
-  color: var(--green-primary);
+  color: var(--matcha-green);
 }
 
 .stat-item.active .van-icon {
-  color: var(--green-primary);
+  color: var(--matcha-green);
 }
 
-/* 作品内容 */
+/* 作品内容 - 纸质书体验 */
 .work-body {
   margin-top: 20px;
 }
 
 .content-text {
-  font-size: 16px;
-  line-height: 1.8;
-  color: var(--text-primary);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 17px;
+  line-height: 2;
+  color: var(--ink-dark);
   white-space: pre-wrap;
   word-wrap: break-word;
 }
@@ -530,18 +533,18 @@ onMounted(() => {
 .comments-section {
   margin-top: 30px;
   padding: 20px;
-  background: white;
-  border-top: 1px solid #f0f0f0;
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 16px;
+  color: var(--ink-dark);
+  margin-bottom: 20px;
+  padding-left: 8px;
+  border-left: 4px solid var(--lemon-yellow);
 }
 
-/* 评论列表 */
+/* 评论列表 - 聊天气泡风格 */
 .comments-list {
   margin-bottom: 20px;
 }
@@ -549,19 +552,14 @@ onMounted(() => {
 .comment-item {
   display: flex;
   gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid #f5f5f5;
-}
-
-.comment-item:last-child {
-  border-bottom: none;
+  margin-bottom: 16px;
 }
 
 .comment-avatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--light-green);
+  background: var(--light-matcha);
   color: white;
   display: flex;
   align-items: center;
@@ -571,7 +569,12 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-.comment-content {
+.comment-bubble {
+  background: var(--pure-white);
+  padding: 12px 16px;
+  border-radius: 16px;
+  border-top-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
   flex: 1;
 }
 
@@ -584,8 +587,8 @@ onMounted(() => {
 
 .comment-author {
   font-size: 14px;
-  font-weight: 500;
-  color: var(--green-primary);
+  font-weight: 600;
+  color: var(--matcha-green);
 }
 
 .comment-time {
@@ -594,7 +597,7 @@ onMounted(() => {
 }
 
 .comment-text {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.6;
   color: var(--text-primary);
   margin: 0;
@@ -615,7 +618,7 @@ onMounted(() => {
 .comment-input-section {
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #F5F5F5;
 }
 
 .comment-input-section :deep(.van-field) {
@@ -625,7 +628,8 @@ onMounted(() => {
 
 .comment-input-section :deep(.van-button) {
   margin-top: 12px;
-  height: 40px;
-  font-size: 14px;
+  height: 44px;
+  font-size: 15px;
+  border-radius: 22px;
 }
 </style>

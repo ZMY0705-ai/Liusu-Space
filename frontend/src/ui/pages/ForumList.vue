@@ -21,9 +21,10 @@
       <!-- 帖子列表 -->
       <div v-else class="posts-list">
         <div 
-          v-for="post in posts" 
+          v-for="(post, index) in posts" 
           :key="post.id" 
           class="post-card"
+          :class="index % 2 === 0 ? 'style-a' : 'style-b'"
           @click="handlePostClick(post.id)"
         >
           <h3 class="post-title">{{ post.title }}</h3>
@@ -166,21 +167,21 @@ onMounted(() => {
 <style scoped>
 .forum-container {
   min-height: 100vh;
-  background: #FAF9F6;
+  background: var(--paper-white);
   padding-bottom: 20px;
 }
 
 /* 顶部标题栏 */
 .header {
-  background: #fff;
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  background: var(--pure-white);
+  padding: 16px 20px;
+  border-bottom: 1px solid #F5F5F5;
 }
 
 .page-title {
   font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 700;
+  color: var(--matcha-green);
   margin: 0;
 }
 
@@ -217,15 +218,23 @@ onMounted(() => {
   margin-bottom: 24px;
 }
 
-/* 帖子卡片 */
+/* 帖子卡片 - 便签纸风格 */
 .post-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-soft);
   transition: all 0.3s;
   cursor: pointer;
+  position: relative;
+}
+
+.post-card.style-a {
+  background: #FFFDE7; /* 浅黄 */
+}
+
+.post-card.style-b {
+  background: #E8F5E9; /* 浅绿 */
 }
 
 .post-card:active {
@@ -233,9 +242,9 @@ onMounted(() => {
 }
 
 .post-title {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--ink-dark);
   margin-bottom: 8px;
   line-height: 1.4;
   display: -webkit-box;
@@ -248,7 +257,7 @@ onMounted(() => {
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.6;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -259,7 +268,7 @@ onMounted(() => {
 .post-author {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 12px;
 }
 
@@ -267,7 +276,7 @@ onMounted(() => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--light-green);
+  background: var(--matcha-green);
   color: white;
   display: flex;
   align-items: center;
@@ -287,7 +296,7 @@ onMounted(() => {
 .author-name {
   font-size: 13px;
   font-weight: 500;
-  color: var(--green-primary);
+  color: var(--matcha-green);
 }
 
 .post-time {
@@ -298,7 +307,7 @@ onMounted(() => {
 /* 统计数据 */
 .post-stats {
   padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px dashed rgba(0,0,0,0.1);
 }
 
 .stat-item {

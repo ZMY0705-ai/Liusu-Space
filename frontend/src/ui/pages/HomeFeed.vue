@@ -2,13 +2,18 @@
   <div class="home-container">
     <!-- 顶部标题栏 -->
     <div class="header">
-      <h1 class="app-title"> 流俗地</h1>
+      <h1 class="app-title">流俗地</h1>
     </div>
 
     <!-- 欢迎区域 -->
     <div v-if="authStore.isAuthenticated" class="welcome-section">
-      <h2>欢迎回来, {{ authStore.user?.nickname || '文艺青年' }}!</h2>
-      <p class="welcome-text">在文字的世界里，遇见更好的自己</p>
+      <svg class="wave-decoration" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path fill="#A8D5A1" fill-opacity="0.3" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+      </svg>
+      <div class="welcome-content">
+        <h2>欢迎回来，Writer！</h2>
+        <p class="welcome-text">在文字的世界里，遇见更好的自己</p>
+      </div>
     </div>
     <div v-else class="welcome-section">
       <h2>欢迎来到流俗地</h2>
@@ -149,54 +154,73 @@ watch(() => route.query.refresh, () => {
 <style scoped>
 .home-container {
   min-height: 100vh;
-  background: #FAF9F6;
+  background: var(--paper-white);
   padding-bottom: 20px;
 }
 
 /* 顶部标题栏 */
 .header {
-  background: #fff;
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  background: var(--pure-white);
+  padding: 16px 20px;
+  border-bottom: 1px solid #F5F5F5;
 }
 
 .app-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--matcha-green);
   margin: 0;
+  letter-spacing: 1px;
 }
 
 /* 欢迎区域 */
 .welcome-section {
+  position: relative;
   text-align: center;
-  padding: 24px 16px;
+  padding: 30px 20px;
   margin: 16px;
-  background: linear-gradient(135deg, #BCDDBE, #CDE2EB);
-  border-radius: 12px;
-  color: white;
+  background: linear-gradient(135deg, var(--light-matcha), #E8F5E9);
+  border-radius: 24px;
+  color: var(--ink-dark);
+  overflow: hidden;
+}
+
+.wave-decoration {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  opacity: 0.5;
+}
+
+.welcome-content {
+  position: relative;
+  z-index: 1;
 }
 
 .welcome-section h2 {
-  font-size: 20px;
+  font-size: 22px;
   margin-bottom: 8px;
+  color: var(--ink-dark);
 }
 
 .welcome-text {
   font-size: 14px;
-  opacity: 0.9;
+  opacity: 0.8;
   margin-bottom: 16px;
 }
 
 .btn-login {
   display: inline-block;
   padding: 10px 24px;
-  background: white;
-  color: #64A386;
+  background: var(--pure-white);
+  color: var(--matcha-green);
   border-radius: 20px;
   text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(133, 173, 138, 0.2);
 }
 
 /* 作品列表区域 */
@@ -205,11 +229,11 @@ watch(() => route.query.refresh, () => {
 }
 
 .section-title {
-  font-size: 16px;
-  color: var(--text-primary);
+  font-size: 18px;
+  color: var(--ink-dark);
   margin: 24px 0 16px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #f0f0f0;
+  padding-left: 8px;
+  border-left: 4px solid var(--lemon-yellow);
 }
 
 /* 加载状态 */
