@@ -355,8 +355,7 @@ onMounted(() => {
 <style scoped>
 .editor-container {
   min-height: 100vh;
-  background: #FAF9F6;
-  background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.02) 2px, rgba(0, 0, 0, 0.02) 4px);
+  background: transparent;
   padding-bottom: 80px;
 }
 
@@ -383,7 +382,9 @@ onMounted(() => {
 
 /* 表单 */
 .editor-form {
-  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 20px;
 }
 
 .form-group {

@@ -80,6 +80,14 @@ function onSelect(action: any) {
   z-index: 100;
 }
 
+/* 桌面端适配：当使用DesktopLayout时，FAB按钮位置调整 */
+@media (min-width: 769px) {
+  .fab-menu {
+    bottom: 40px;
+    right: 40px;
+  }
+}
+
 .fab-button {
   width: 64px;
   height: 64px;

@@ -131,7 +131,7 @@ onMounted(() => {
 <style scoped>
 .forum-detail-container {
   min-height: 100vh;
-  background: #FAF9F6;
+  background: transparent;
   padding-bottom: 20px;
 }
 
@@ -182,7 +182,9 @@ onMounted(() => {
 
 /* 帖子信息 */
 .post-info {
-  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 20px;
 }
 
 .post-title {

@@ -469,7 +469,7 @@ onActivated(async () => {
 <style scoped>
 .me-container {
   min-height: 100vh;
-  background: var(--paper-white);
+  background: transparent;
   padding-bottom: 20px;
 }
 
@@ -721,15 +721,17 @@ onActivated(async () => {
 
 /* 内容区域 */
 .content-section {
-  padding: 0 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--ink-dark);
-  margin: 24px 0 16px;
-  padding-left: 8px;
+  margin: 32px 0 20px;
+  padding-left: 12px;
   border-left: 4px solid var(--lemon-yellow);
 }
 
@@ -756,18 +758,25 @@ onActivated(async () => {
   font-size: 14px;
 }
 
-/* 作品列表 */
+/* 作品列表 - 网格布局 */
 .works-list {
-  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
 }
 
 .work-item {
   background: var(--pure-white);
   border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 20px;
   box-shadow: var(--shadow-soft);
   transition: all 0.2s;
+}
+
+.work-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(133, 173, 138, 0.15);
 }
 
 .work-content-wrapper {
@@ -840,21 +849,28 @@ onActivated(async () => {
   color: var(--text-light);
 }
 
-/* 帖子列表 */
+/* 帖子列表 - 网格布局 */
 .posts-list {
-  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
 }
 
 .post-item {
   background: var(--pure-white);
   border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 20px;
   box-shadow: var(--shadow-soft);
   transition: all 0.2s;
   cursor: pointer;
   display: flex;
   gap: 12px;
+}
+
+.post-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(133, 173, 138, 0.15);
 }
 
 .post-item:active {

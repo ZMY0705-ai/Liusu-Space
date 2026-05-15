@@ -24,67 +24,67 @@ const router = createRouter({
       path: '/home',
       name: 'Home',
       component: () => import('@/ui/pages/HomeFeed.vue'),
-      meta: { requiresAuth: false, layout: 'mobile' }
+      meta: { requiresAuth: false, layout: 'desktop' }
     },
     {
       path: '/work/:id',
       name: 'WorkDetail',
       component: () => import('@/ui/pages/WorkDetail.vue'),
-      meta: { requiresAuth: false, layout: 'mobile' }
+      meta: { requiresAuth: false, layout: 'desktop' }
     },
     {
       path: '/editor',
       name: 'Editor',
       component: () => import('@/ui/pages/EditorWork.vue'),
-      meta: { requiresAuth: true, layout: 'mobile' }
+      meta: { requiresAuth: true, layout: 'desktop' }
     },
     {
       path: '/editor/:id',
       name: 'EditorEdit',
       component: () => import('@/ui/pages/EditorWork.vue'),
-      meta: { requiresAuth: true, layout: 'mobile' }
+      meta: { requiresAuth: true, layout: 'desktop' }
     },
     {
       path: '/forum',
       name: 'Forum',
       component: () => import('@/ui/pages/ForumList.vue'),
-      meta: { requiresAuth: false, layout: 'mobile' }
+      meta: { requiresAuth: false, layout: 'desktop' }
     },
     {
       path: '/forum/post/:id',
       name: 'ForumDetail',
       component: () => import('@/ui/pages/ForumDetail.vue'),
-      meta: { requiresAuth: false, layout: 'mobile' }
+      meta: { requiresAuth: false, layout: 'desktop' }
     },
     {
       path: '/forum/create',
       name: 'ForumCreate',
       component: () => import('@/ui/pages/ForumCreate.vue'),
-      meta: { requiresAuth: true, layout: 'mobile' }
+      meta: { requiresAuth: true, layout: 'desktop' }
     },
     {
       path: '/me',
       name: 'Me',
       component: () => import('@/ui/pages/MeCenter.vue'),
-      meta: { requiresAuth: true, layout: 'mobile' }
+      meta: { requiresAuth: true, layout: 'desktop' }
     },
     {
       path: '/user/:id',
       name: 'UserProfile',
       component: () => import('@/ui/pages/UserProfile.vue'),
-      meta: { requiresAuth: false, layout: 'mobile' }
+      meta: { requiresAuth: false, layout: 'desktop' }
     },
     {
       path: '/profile/edit',
       name: 'EditProfile',
       component: () => import('@/ui/pages/EditProfile.vue'),
-      meta: { requiresAuth: true, layout: 'mobile' }
+      meta: { requiresAuth: true, layout: 'desktop' }
     },
     {
       path: '/notifications',
       name: 'Notifications',
       component: () => import('@/ui/pages/Notifications.vue'),
-      meta: { requiresAuth: true, layout: 'mobile' }
+      meta: { requiresAuth: true, layout: 'desktop' }
     }
   ]
 })

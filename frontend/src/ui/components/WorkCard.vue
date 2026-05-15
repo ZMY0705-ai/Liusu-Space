@@ -116,11 +116,11 @@ const handleClick = () => {
   box-shadow: var(--shadow-soft);
   transition: all 0.3s;
   cursor: pointer;
-  margin-bottom: 20px;
 }
 
-.work-card:active {
-  transform: scale(0.98);
+.work-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(133, 173, 138, 0.2);
 }
 
 /* 封面图片 */

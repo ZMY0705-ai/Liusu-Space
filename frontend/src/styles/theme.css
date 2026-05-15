@@ -36,9 +36,179 @@
 
 body {
   font-family: 'Noto Sans SC', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--paper-white);
+  background-image: url('@/assets/bg-landscape.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
   color: var(--ink-dark);
   line-height: 1.7;
+  position: relative;
+}
+
+/* 粗糙纸面质感 + 大面积插画装饰背景 */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  
+  /* 粗糙纸面纹理 */
+  background: 
+    /* 纸面颗粒质感 */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(200, 180, 160, 0.03) 2px,
+      rgba(200, 180, 160, 0.03) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(200, 180, 160, 0.03) 2px,
+      rgba(200, 180, 160, 0.03) 4px
+    ),
+    /* 大面积植物插画装饰 */
+    /* 左上角 - 大叶片 */
+    radial-gradient(
+      ellipse 300px 500px at 5% 10%,
+      rgba(133, 173, 138, 0.15) 0%,
+      rgba(133, 173, 138, 0.08) 40%,
+      transparent 70%
+    ),
+    /* 右上角 - 藤蔓枝条 */
+    radial-gradient(
+      ellipse 400px 350px at 95% 5%,
+      rgba(168, 213, 161, 0.18) 0%,
+      rgba(168, 213, 161, 0.06) 50%,
+      transparent 75%
+    ),
+    /* 左下角 - 叶片群 */
+    radial-gradient(
+      ellipse 350px 450px at 8% 85%,
+      rgba(133, 173, 138, 0.12) 0%,
+      rgba(133, 173, 138, 0.05) 45%,
+      transparent 70%
+    ),
+    /* 右下角 - 大叶片 */
+    radial-gradient(
+      ellipse 380px 420px at 92% 88%,
+      rgba(168, 213, 161, 0.16) 0%,
+      rgba(168, 213, 161, 0.07) 50%,
+      transparent 72%
+    ),
+    /* 中部偏左 - 柠檬黄点缀 */
+    radial-gradient(
+      ellipse 280px 320px at 15% 50%,
+      rgba(252, 228, 141, 0.12) 0%,
+      rgba(252, 228, 141, 0.04) 50%,
+      transparent 70%
+    ),
+    /* 中部偏右 - 柠檬黄点缀 */
+    radial-gradient(
+      ellipse 300px 280px at 85% 45%,
+      rgba(255, 216, 77, 0.10) 0%,
+      rgba(255, 216, 77, 0.03) 50%,
+      transparent 68%
+    ),
+    /* 顶部中央 - 叶片 */
+    radial-gradient(
+      ellipse 320px 380px at 50% 3%,
+      rgba(133, 173, 138, 0.14) 0%,
+      rgba(133, 173, 138, 0.05) 48%,
+      transparent 72%
+    ),
+    /* 底部中央 - 叶片 */
+    radial-gradient(
+      ellipse 340px 360px at 48% 97%,
+      rgba(168, 213, 161, 0.13) 0%,
+      rgba(168, 213, 161, 0.04) 50%,
+      transparent 70%
+    );
+}
+
+/* 额外的CSS植物插画装饰 - 叶片形状 */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  
+  background:
+    /* 左侧大叶片 - 细长椭圆 */
+    radial-gradient(
+      ellipse 120px 350px at 3% 15%,
+      rgba(133, 173, 138, 0.18) 0%,
+      rgba(133, 173, 138, 0.08) 60%,
+      transparent 100%
+    ),
+    /* 左侧中叶片 */
+    radial-gradient(
+      ellipse 100px 280px at 5% 40%,
+      rgba(168, 213, 161, 0.15) 0%,
+      rgba(168, 213, 161, 0.06) 65%,
+      transparent 100%
+    ),
+    /* 右侧大叶片 */
+    radial-gradient(
+      ellipse 130px 380px at 97% 18%,
+      rgba(133, 173, 138, 0.16) 0%,
+      rgba(133, 173, 138, 0.07) 60%,
+      transparent 100%
+    ),
+    /* 右侧中叶片 */
+    radial-gradient(
+      ellipse 110px 300px at 95% 45%,
+      rgba(168, 213, 161, 0.14) 0%,
+      rgba(168, 213, 161, 0.05) 65%,
+      transparent 100%
+    ),
+    /* 藤蔓装饰 - 左上到左中 */
+    radial-gradient(
+      ellipse 80px 200px at 2% 28%,
+      rgba(133, 173, 138, 0.12) 0%,
+      transparent 100%
+    ),
+    /* 藤蔓装饰 - 右上到右中 */
+    radial-gradient(
+      ellipse 85px 220px at 98% 32%,
+      rgba(168, 213, 161, 0.11) 0%,
+      transparent 100%
+    ),
+    /* 小叶片点缀 - 左下 */
+    radial-gradient(
+      ellipse 90px 240px at 4% 75%,
+      rgba(252, 228, 141, 0.13) 0%,
+      transparent 100%
+    ),
+    /* 小叶片点缀 - 右下 */
+    radial-gradient(
+      ellipse 95px 260px at 96% 78%,
+      rgba(255, 216, 77, 0.10) 0%,
+      transparent 100%
+    ),
+    /* 顶部藤蔓 */
+    radial-gradient(
+      ellipse 200px 70px at 50% 1%,
+      rgba(133, 173, 138, 0.15) 0%,
+      transparent 100%
+    ),
+    /* 底部藤蔓 */
+    radial-gradient(
+      ellipse 220px 75px at 52% 99%,
+      rgba(168, 213, 161, 0.13) 0%,
+      transparent 100%
+    );
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -54,8 +224,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* 滚动条样式 */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -64,9 +234,26 @@ h1, h2, h3, h4, h5, h6 {
 
 ::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #ccc;
+}
+
+/* 响应式媒体查询 - 桌面端优化 */
+@media (min-width: 769px) {
+  /* 桌面端滚动条更宽 */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* 响应式媒体查询 - 移动端优化 */
+@media (max-width: 768px) {
+  /* 移动端背景图适配 */
+  body {
+    background-size: cover;
+  }
 }

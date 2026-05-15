@@ -154,7 +154,7 @@ watch(() => route.query.refresh, () => {
 <style scoped>
 .home-container {
   min-height: 100vh;
-  background: var(--paper-white);
+  background: transparent;
   padding-bottom: 20px;
 }
 
@@ -177,8 +177,9 @@ watch(() => route.query.refresh, () => {
 .welcome-section {
   position: relative;
   text-align: center;
-  padding: 30px 20px;
-  margin: 16px;
+  padding: 40px 30px;
+  margin: 0 auto 24px;
+  max-width: 1200px;
   background: linear-gradient(135deg, var(--light-matcha), #E8F5E9);
   border-radius: 24px;
   color: var(--ink-dark);
@@ -225,14 +226,15 @@ watch(() => route.query.refresh, () => {
 
 /* 作品列表区域 */
 .works-section {
-  padding: 0 16px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 20px;
   color: var(--ink-dark);
-  margin: 24px 0 16px;
-  padding-left: 8px;
+  margin: 32px 0 20px;
+  padding-left: 12px;
   border-left: 4px solid var(--lemon-yellow);
 }
 
@@ -259,9 +261,12 @@ watch(() => route.query.refresh, () => {
   font-size: 14px;
 }
 
-/* 作品列表 */
+/* 作品列表 - 网格布局 */
 .works-list {
-  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
 }
 
 /* 加载更多 */

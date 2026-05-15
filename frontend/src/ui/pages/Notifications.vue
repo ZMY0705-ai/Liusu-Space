@@ -195,7 +195,7 @@ onMounted(() => {
 <style scoped>
 .notifications-container {
   min-height: 100vh;
-  background: #FAF9F6;
+  background: transparent;
   padding-bottom: 20px;
 }
 
@@ -241,7 +241,9 @@ onMounted(() => {
 
 /* 通知列表 */
 .notifications-list {
-  padding: 16px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px 16px;
 }
 
 /* 通知项 */

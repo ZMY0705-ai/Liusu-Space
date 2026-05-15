@@ -7,6 +7,13 @@
         </keep-alive>
       </router-view>
     </MobileLayout>
+    <DesktopLayout v-else-if="layout === 'desktop'">
+      <router-view v-slot="{ Component }">
+        <keep-alive :include="['MeCenter']">
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
+    </DesktopLayout>
     <div v-else>
       <router-view v-slot="{ Component }">
         <keep-alive :include="['MeCenter']">
@@ -23,6 +30,7 @@ import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import MobileLayout from '@/ui/layouts/MobileLayout.vue'
+import DesktopLayout from '@/ui/layouts/DesktopLayout.vue'
 
 const route = useRoute()
 const authStore = useAuthStore()
@@ -31,6 +39,9 @@ const authStore = useAuthStore()
 const layout = computed(() => {
   if (route.meta.layout === 'mobile') {
     return 'mobile'
+  }
+  if (route.meta.layout === 'desktop') {
+    return 'desktop'
   }
   return 'default'
 })
@@ -45,11 +56,9 @@ onMounted(() => {
 @import '@/styles/theme.css';
 
 .app-container {
-  max-width: var(--mobile-max-width);
-  margin: 0 auto;
+  width: 100%;
   min-height: 100vh;
-  background: var(--paper-bg);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  background: transparent;
 }
 
 /* 全屏布局（登录/注册页） */

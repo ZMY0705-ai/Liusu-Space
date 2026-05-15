@@ -167,7 +167,7 @@ onMounted(() => {
 <style scoped>
 .forum-container {
   min-height: 100vh;
-  background: var(--paper-white);
+  background: transparent;
   padding-bottom: 20px;
 }
 
@@ -187,7 +187,9 @@ onMounted(() => {
 
 /* 帖子列表区域 */
 .posts-section {
-  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 /* 加载状态 */
@@ -213,20 +215,27 @@ onMounted(() => {
   font-size: 14px;
 }
 
-/* 帖子列表 */
+/* 帖子列表 - 网格布局 */
 .posts-list {
-  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
 }
 
 /* 帖子卡片 - 便签纸风格 */
 .post-card {
   border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 16px;
+  padding: 24px;
   box-shadow: var(--shadow-soft);
   transition: all 0.3s;
   cursor: pointer;
   position: relative;
+}
+
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(133, 173, 138, 0.2);
 }
 
 .post-card.style-a {

@@ -112,7 +112,7 @@ function goBack() {
 <style scoped>
 .forum-create-container {
   min-height: 100vh;
-  background: #FAF9F6;
+  background: transparent;
   padding-bottom: 20px;
 }
 
@@ -139,7 +139,9 @@ function goBack() {
 
 /* 表单 */
 .create-form {
-  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 20px;
 }
 
 .form-group {

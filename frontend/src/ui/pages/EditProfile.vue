@@ -264,7 +264,7 @@ onMounted(() => {
 <style scoped>
 .edit-profile-container {
   min-height: 100vh;
-  background: var(--paper-white);
+  background: transparent;
 }
 
 /* 保存按钮 */
@@ -286,7 +286,9 @@ onMounted(() => {
 
 /* 表单内容 */
 .form-content {
-  padding: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
 }
 
 /* 头像区域 */

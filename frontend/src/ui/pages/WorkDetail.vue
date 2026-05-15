@@ -265,7 +265,7 @@ onMounted(() => {
 <style scoped>
 .work-detail-container {
   min-height: 100vh;
-  background: var(--paper-white);
+  background: transparent;
   padding-bottom: 20px;
 }
 
@@ -339,9 +339,10 @@ onMounted(() => {
 
 /* 作品信息 */
 .work-info {
-  padding: 24px 20px;
+  padding: 32px;
   background: var(--pure-white);
-  margin: 16px;
+  margin: 0 auto 24px;
+  max-width: 1000px;
   border-radius: 20px;
   box-shadow: var(--shadow-soft);
 }
@@ -458,15 +459,18 @@ onMounted(() => {
 /* 评论区 */
 .comments-section {
   margin-top: 30px;
-  padding: 20px;
+  padding: 0 20px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--ink-dark);
-  margin-bottom: 20px;
-  padding-left: 8px;
+  margin-bottom: 24px;
+  padding-left: 12px;
   border-left: 4px solid var(--lemon-yellow);
 }
 

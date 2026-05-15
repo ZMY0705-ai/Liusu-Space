@@ -1,3 +1,26 @@
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const active = ref(0)
+
+// 根据当前路由设置激活的tab
+watch(
+  () => route.path,
+  (path) => {
+    if (path === '/home') {
+      active.value = 0
+    } else if (path === '/forum' || path.startsWith('/forum/post') || path === '/forum/create') {
+      active.value = 1
+    } else if (path === '/me') {
+      active.value = 2
+    }
+  },
+  { immediate: true }
+)
+</script>
+
 <template>
   <div class="mobile-layout">
     <!-- 大面积波浪背景装饰 -->
@@ -23,35 +46,12 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
-const active = ref(0)
-
-// 根据当前路由设置激活的tab
-watch(
-  () => route.path,
-  (path) => {
-    if (path === '/home') {
-      active.value = 0
-    } else if (path === '/forum' || path.startsWith('/forum/post') || path === '/forum/create') {
-      active.value = 1
-    } else if (path === '/me') {
-      active.value = 2
-    }
-  },
-  { immediate: true }
-)
-</script>
-
 <style scoped>
 .mobile-layout {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--paper-white);
+  background: transparent;
   position: relative;
   overflow: hidden;
 }
